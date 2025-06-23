@@ -2,7 +2,7 @@ import { useContext, createContext, useState, useEffect } from "react"
 import Cookies from "js-cookie";
 
 interface TokenContextType {
-    token: string | null,
+    token: string | undefined,
     setcookie: (name: string, token: string, day: number) => void,
     deletecookie: (name: string) => void
 }
@@ -18,13 +18,13 @@ export const useToken = (): TokenContextType => {
 }
 
 export const TokenProvider = ({ children }: { children: React.ReactNode }) => {
-    const [token, settoken] = useState<string | null>();
+    const [token, settoken] = useState<string | undefined>();
 
     useEffect(() => {
         const cookieToken = document.cookie
             .split("; ")
             .find((row) => row.startsWith("user="));
-        const extracted = cookieToken ? cookieToken.split("=")[1] : null;
+        const extracted = cookieToken ? cookieToken.split("=")[1] : undefined;
         settoken(extracted);
 
     }, [])
@@ -36,7 +36,7 @@ export const TokenProvider = ({ children }: { children: React.ReactNode }) => {
 
     const deletecookie = (name: string) => {
         Cookies.remove(name);
-        settoken(null);
+        settoken(undefined);
     }
     return (
         <TokenContext.Provider value={{ token, setcookie, deletecookie }}>
