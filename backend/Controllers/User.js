@@ -2,7 +2,7 @@ const Users = require("../Models/User");
 const { Posts, Comments } = require("../Models/Post")
 
 const { OAuth2Client } = require('google-auth-library');
-const client = new OAuth2Client("439113069317-2sahsmav9eoppb7f9jqkqbuv1r2se6ik.apps.googleusercontent.com");
+const client = new OAuth2Client(process.env.GOOGLE_AUTH_KEY);
 
 const { generateJWTtoken } = require("../Service/auth");
 const { getUser } = require("../Service/auth");
@@ -29,7 +29,7 @@ const GoogleAuthenticateUser = async (req, res) => {
 
     const ticket = await client.verifyIdToken({
         idToken: token,
-        audience: "439113069317-2sahsmav9eoppb7f9jqkqbuv1r2se6ik.apps.googleusercontent.com",
+        audience: process.env.GOOGLE_AUTH_KEY,
     });
     const payload = ticket.getPayload();
 
@@ -63,7 +63,7 @@ const GoogleSignUpUser = async (req, res) => {
     try {
         const ticket = await client.verifyIdToken({
             idToken: token,
-            audience: "439113069317-2sahsmav9eoppb7f9jqkqbuv1r2se6ik.apps.googleusercontent.com",
+            audience: process.env.GOOGLE_AUTH_KEY,
         });
         const payload = ticket.getPayload();
         console.log(payload.email.split('@')[0])
