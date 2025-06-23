@@ -79,7 +79,7 @@ const SideBar = (props: SideBarProps) => {
                                 </div>
                             </div>
                         ))}
-                        <button className='bg-white text-white flex items-center gap-2 ml-2 px-4 py-1 rounded-full text-md hover:bg-blue-600 cursor-pointer' onClick={()=>deletecookie("user")}><IoLogOutOutline/>Log Out</button>
+                        <button className='bg-white text-black flex items-center gap-2 ml-2 px-4 py-1 rounded-full text-md cursor-pointer' onClick={()=>deletecookie("user")}><IoLogOutOutline/>Log Out</button>
                     </nav>
                 )}
             </nav>}
