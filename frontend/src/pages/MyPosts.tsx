@@ -69,7 +69,7 @@ const MyPosts = ({ archieved }: { archieved: boolean }) => {
                 Authorization: `Bearer ${tokenRef.current}`
             }
         })
-            .then((response) => {setPosts(prev => prev.filter((post) => post._id !== id));})
+            .then(() => {setPosts(prev => prev.filter((post) => post._id !== id));})
             .catch((err) => console.log(err))
     }
 
@@ -79,7 +79,7 @@ const MyPosts = ({ archieved }: { archieved: boolean }) => {
                 Authorization: `Bearer ${tokenRef.current}`
             }
         })
-            .then((response) => setPosts(prev => prev.filter((post) => post._id !== id)))
+            .then(() => setPosts(prev => prev.filter((post) => post._id !== id)))
             .catch((err) => console.log(err))
     }
 

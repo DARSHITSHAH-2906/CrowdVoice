@@ -38,15 +38,15 @@ interface PostType {
 
 const Home = ({sideBar} : {sideBar : boolean}) => {
 
-  const [loading, setloading] = useState<boolean>(false);
+  // const [loading, setloading] = useState<boolean>(false);
   const [posts, setPosts] = useState<PostType[] | null>(null)
   useEffect(() => {
-    setloading(true);
+    // setloading(true);
 
     axios.get("http://localhost:3000/post/fetch")
       .then((response) => {
         setPosts(response.data.posts);
-        setloading(false);
+        // setloading(false);
       })
 
   }, []);
