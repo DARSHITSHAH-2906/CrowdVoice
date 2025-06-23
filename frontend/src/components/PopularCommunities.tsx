@@ -1,11 +1,16 @@
 import axios from 'axios';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 
+interface CommunityType{
+    name: string;
+    profilePic: string;
+    members: string[];
+}
 
 const PopularCommunity = () => {
-    const [popularcommunity, Setcommunity] = useState([]);
+    const [popularcommunity, Setcommunity] = useState<CommunityType[]>([]);
     const [seeMore, toggleSeeMore] = useState(false);
 
     useEffect(() => {

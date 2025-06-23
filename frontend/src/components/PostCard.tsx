@@ -1,4 +1,4 @@
-import React from 'react';
+// import React from 'react';
 import { FaRegThumbsUp, FaRegThumbsDown, FaRegBookmark } from 'react-icons/fa';
 import { AiOutlineComment } from 'react-icons/ai';
 import { formatDistanceToNow } from "date-fns"
