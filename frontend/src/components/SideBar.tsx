@@ -7,6 +7,7 @@ import { MdArchive } from "react-icons/md";
 import {
     IoHomeOutline, IoFlameOutline, IoDocumentTextOutline, IoBookmarkOutline, IoSettingsOutline, IoPersonOutline, IoAddCircleOutline, IoNotificationsOutline, IoHelpCircleOutline, IoLogOutOutline, IoBusinessOutline, IoPeopleOutline, IoCalendarOutline, IoMenuSharp
 } from 'react-icons/io5';
+import { useToken } from "../context/TokenProvider";
 
 const navSections = [
     {
@@ -54,6 +55,7 @@ interface SideBarProps {
 }
 
 const SideBar = (props: SideBarProps) => {
+    const {deletecookie} = useToken()
     return (
         <aside className={`fixed max-h-screen z-2 ${props.sideBar ? "w-[250px]" : "w-[40px]"} top-[66px] bottom-0 left-0 bg-black border-r-1 border-gray-400 flex`}>
             <div className='w-[40px] h-full bg-black'></div>
@@ -77,7 +79,7 @@ const SideBar = (props: SideBarProps) => {
                                 </div>
                             </div>
                         ))}
-                        <button className='bg-blue-500 text-white flex items-center gap-2 ml-2 px-4 py-1 rounded-full text-md hover:bg-blue-600 cursor-pointer'><IoLogOutOutline/>Log Out</button>
+                        <button className='bg-white text-white flex items-center gap-2 ml-2 px-4 py-1 rounded-full text-md hover:bg-blue-600 cursor-pointer' onClick={()=>deletecookie("user")}><IoLogOutOutline/>Log Out</button>
                     </nav>
                 )}
             </nav>}
