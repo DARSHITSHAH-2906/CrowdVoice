@@ -1,5 +1,5 @@
 import Home from "./pages/Home"
-import Popular from "./pages/Popular"
+// import Popular from "./pages/Popular"
 import RaiseIssue from "./pages/RaiseIssue"
 import PostPage from "./pages/PostPage"
 import MyPosts from "./pages/MyPosts"

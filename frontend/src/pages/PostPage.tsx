@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useToken } from "../context/TokenProvider"
 import Mediaslider from '../components/Mediaslider';

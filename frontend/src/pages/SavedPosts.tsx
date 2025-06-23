@@ -1,4 +1,4 @@
-import React , {useEffect, useState} from 'react'
+import {useEffect, useState} from 'react'
 import PostCard from '../components/PostCard';
 import { useToken } from '../context/TokenProvider';
 import axios from 'axios';

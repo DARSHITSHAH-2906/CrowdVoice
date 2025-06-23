@@ -1,5 +1,5 @@
 // src/pages/InProgressPage.tsx
-import React from 'react';
+// import React from 'react';
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 // import inProgressAnimation from '../assets/animations/inProgress.json';
 

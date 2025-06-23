@@ -28,7 +28,7 @@ const categories = [
 const RaiseIssue = () => {
     const { token } = useToken();
 
-    const navigate = useNavigate();
+    // const navigate = useNavigate();
 
     const [formData, setFormData] = useState<FormDataType>({
         title: '',
