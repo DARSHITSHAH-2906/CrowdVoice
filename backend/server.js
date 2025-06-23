@@ -13,7 +13,7 @@ const communityrouter = require("./Routers/Community")
 const startserver = async () => {
     const app = express();
     app.use(cors({
-        origin: 'http://localhost:5173'
+        origin: 'https://crowd-voice.vercel.app'
     }));
     app.use(express.json());
     app.use("/uploads/image", express.static(path.join(__dirname, "uploads/images")));
