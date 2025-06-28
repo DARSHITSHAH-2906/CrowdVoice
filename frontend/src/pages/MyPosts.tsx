@@ -39,6 +39,8 @@ const MyPosts = () => {
     const { token, setToken , deleteToken } = useToken()
     const { showLoginModal } = useLoginModal();
 
+    const navigate = useNavigate();
+
     useEffect(() => {
         const fetchPosts = async () => {
             try {
@@ -108,10 +110,11 @@ const MyPosts = () => {
             if (response.status === 200) {
                 setPosts(prev => prev.filter((post) => post._id !== id));
                 toast.success("Post archived successfully!");
+                navigate("/archieved-posts");
             } else {
                 toast.error(response.data.error || "Failed to archive post");
             }
-
+            
         } catch (error: any) {
             if (error.response?.status === 401) {
                 // Token expired, try to refresh
@@ -119,11 +122,11 @@ const MyPosts = () => {
                     const res = await axios.get("http://localhost:3000/refresh-token", {
                         withCredentials: true,
                     });
-
+                    
                     // If refresh token is successful, retry archieving the post
                     const newToken = res.data.token;
                     setToken(newToken, "user");
-
+                    
                     const response = await axios.patch(`http://localhost:3000/user/archivepost/${id}`, {
                         isArchieved: true
                     }, {
@@ -132,10 +135,11 @@ const MyPosts = () => {
                             Authorization: `Bearer ${newToken}`
                         }
                     })
-
+                    
                     if (response.status === 200) {
                         setPosts(prev => prev.filter((post) => post._id !== id));
                         toast.success("Post archived successfully!");
+                        navigate("/archieved-posts");
                     } else {
                         toast.error(response.data.error || "Failed to archive post");
                     }

@@ -27,7 +27,7 @@ const PostPage = () => {
     const { state } = useLocation();
     const post = state?.post;
 
-    const { token , setToken , deleteToken } = useToken();
+    const { token, setToken, deleteToken } = useToken();
     const { showLoginModal } = useLoginModal();
 
     const [comment, setcomment] = useState<string>('');
@@ -44,27 +44,29 @@ const PostPage = () => {
     const handleCommentSubmit = async () => {
         if (!comment.trim()) return;
 
-        try{
-            const response  = await axios.post("http://localhost:3000/post/add-comment", { comment, post_id: post._id }, {
+        try {
+            const response = await axios.post("http://localhost:3000/post/add-comment", { comment, post_id: post._id }, {
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
                 }
             })
-                .then((response) => {
-                    const newComment: CommentType = response.data
-                    setComments(prev => [...prev, newComment])
-                })
-                .catch((error) => toast.error(error))
-                .finally(() => setcomment(''));
-        }catch(error : any){
+
+            if (response.status !== 200) {
+                toast.error(response.data.error || "Failed to add comment");
+                return;
+            }
+            const newComment: CommentType = response.data
+            setComments(prev => [...prev, newComment])
+            
+        } catch (error: any) {
             if (error.response?.status === 401) {
                 // Token expired, try to refresh
                 try {
                     const res = await axios.get("http://localhost:3000/refresh-token", {
                         withCredentials: true,
                     });
-                    
+
                     // If refresh token is successful
                     const newToken = res.data.token;
                     setToken(newToken, "user");
@@ -94,7 +96,7 @@ const PostPage = () => {
                 toast.error("Backend is down, please try again later.");
             }
         }
-
+        setcomment('');
     };
 
     if (!post) return <p className="text-white text-center mt-20">No post data available.</p>;

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import {  useState } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { useToken } from '../context/TokenProvider';
@@ -51,12 +51,6 @@ const AddCommunityPost = () => {
             externalLink: ''
         })
     }
-
-    // useEffect(() => {
-    //     if (!token) {
-    //         showLoginModal();
-    //     }
-    // }, [token])
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
