@@ -12,7 +12,7 @@ communityrouter.post("/create" , VerifyUser, uploads.fields([
 ]), CreateCommunity);
 communityrouter.get("/fetchdetails/:id" , FetchCommunityDetails)
 communityrouter.get("/communities" , FetchAllCommunities)
-communityrouter.get("/my-community" , FetchUserCommunities)
+communityrouter.get("/my-community" ,VerifyUser, FetchUserCommunities)
 communityrouter.post("/add-post/:id", VerifyCommunityMember ,uploads.fields([
     {name : "images" , maxCount : 5},
     {name : "videos", maxCount : 5}

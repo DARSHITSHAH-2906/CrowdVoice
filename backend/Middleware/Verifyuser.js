@@ -9,10 +9,9 @@ const VerifyUser = async (req, res, next) => {
         const token = authHeader.split(" ")[1];
         
         const user = getUser(token);
-        console.log(user);
         
         if(!user){
-            return res.status(202).json({error : "User not verified"});
+            return res.status(401).json({error : "Unauthorized"});
         }
 
         req.user = user;

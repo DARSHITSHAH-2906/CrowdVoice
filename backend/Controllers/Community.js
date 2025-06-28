@@ -11,7 +11,7 @@ const CreateCommunity = async (req, res) => {
     const profilePicUrl = `http://localhost:3000/uploads/image/${profilePic}`;
     const createdBy = req.user._id;
 
-    console.log(name, bio, coverImageUrl, profilePicUrl, createdBy)
+    // console.log(name, bio, coverImageUrl, profilePicUrl, createdBy)
 
     try {
         const newcommunity = await Community.create({ name: name, bio: bio, coverImage: coverImageUrl, profilePic: profilePicUrl, createdBy: createdBy });
@@ -19,7 +19,7 @@ const CreateCommunity = async (req, res) => {
         if (!newcommunity) {
             throw new Error("Error creating community");
         }
-        console.log(newcommunity);
+        // console.log(newcommunity);
 
         const community = { ...newcommunity._doc, memberCount: newcommunity.members.length }
         console.log(community);
@@ -72,16 +72,12 @@ const FetchAllCommunities = async (req, res) => {
 }
 
 const FetchUserCommunities = async (req, res) => {
-    const token = req.query.token;
     try {
-        if (!token) {
-            res.status(401).json({ error: "Unauthorized" })
-        }
 
-        const decoded = getUser(token);
+        const decoded = req.user;
 
         if (!decoded) {
-            res.status(401).json({ error: "No user found" });
+            res.status(401).json({ error: "UnAuthorized" });
         }
 
         const usercommunities = await Community.find({ createdBy: decoded._id });
@@ -101,8 +97,8 @@ const FetchUserCommunities = async (req, res) => {
 const AddPost = async (req, res) => {
     const id = req.params.id;
     try{
-        const images = req.files.images;
-        const videos = req.files.videos;
+        const images = req.files?.images || [];
+        const videos = req.files?.videos || [];
         const { title, content, category, location , attachments , tags } = req.body
     
         const imageUrl = images.map((image, ind) => `http://localhost:3000/uploads/image/${image.filename}`);
