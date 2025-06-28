@@ -3,6 +3,7 @@ import axios from 'axios'
 import { toast } from 'react-toastify'
 import { useNavigate } from 'react-router-dom';
 import { useToken } from '../context/TokenProvider'
+import { useLoginModal } from '../context/LoginModalContext';
 
 const NewCommunity = () => {
     const [logo, setLogo] = useState<File | null>(null);
@@ -11,7 +12,15 @@ const NewCommunity = () => {
     const [bio, setBio] = useState<string>('');
 
     const navigate = useNavigate();
-    const { token } = useToken();
+    const { token, setToken, deleteToken } = useToken();
+    const { showLoginModal } = useLoginModal();
+
+    const clearformData = () => {
+        setLogo(null);
+        setCoverImage(null);
+        setName('');
+        setBio('');
+    }
 
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -42,23 +51,64 @@ const NewCommunity = () => {
             } else {
                 toast.error(response.data.error);
             }
-        } catch (err) {
-            toast.error("Failed to create community.");
-        }
+        } catch (error: any) {
+            if (error.response?.status === 401) {
+                // Token expired, try to refresh
+                try {
+                    const res = await axios.get("http://localhost:3000/refresh-token", {
+                        withCredentials: true,
+                    });
 
-        // Reset form
-        setLogo(null);
-        setCoverImage(null);
-        setName('');
-        setBio('');
+                    // If refresh token is successful, retry the community request
+                    const newToken = res.data.token;
+                    setToken(newToken, "user");
+
+                    const retryResponse = await axios.post("http://localhost:3000/community/create", formData, {
+                        headers: {
+                            'Content-Type': 'multipart/form-data',
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
+
+                    // Check if retry was successful
+                    if (retryResponse.status === 200) {
+                        toast.success(retryResponse.data.message);
+                        navigate("/");
+                    } else {
+                        toast.error(retryResponse.data.error);
+                    }
+                } catch (error: any) {
+                    if (error.response?.status === 401) {
+                        // If refresh token failed, clear form data and show login modal
+                        clearformData();
+                                            deleteToken("user");
+
+                        toast.info("Session expired, please login again.");
+                        showLoginModal();
+                    }
+                    else {
+                        toast.error("Backend is down, please try again later.");
+                    }
+                }
+            }
+            else {
+                // Failed to create post
+                toast.error("Backend is down, please try again later.");
+            }
+        }
+        clearformData();
     };
 
-    if(!token){
-         if (!token) return (<div className='min-w-screen min-h-screen bg-black/90 flex justify-center items-center text-gray-500 text-2xl'>Please login first to create community..</div>)
-    }
+    if (!token) return (<div className='min-w-screen min-h-screen bg-black flex justify-center items-center text-gray-500 text-2xl'>
+        <div className='flex items-center justify-center flex-col gap-3'>
+            <p>Please login first to create community...</p>
+            <button className='bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600' onClick={showLoginModal}>Log in</button>
+        </div>
+    </div>
+    )
 
     return (
-        <div className="max-w-screen min-h-screen bg-black/90 pt-[70px] pl-[350px] flex items-center">
+        <div className="max-w-screen min-h-screen bg-black pt-[70px] pl-[350px] flex items-center">
             <div className='min-w-2xl bg-black/90 p-5 rounded-2xl'>
                 <h2 className="text-2xl font-bold mb-4 text-white text-center">Create New Community</h2>
                 <form onSubmit={handleSubmit} className="space-y-6">

@@ -1,11 +1,9 @@
 import { useEffect, useState } from 'react'
 import axios from 'axios';
 import { useToken } from "../context/TokenProvider"
-import { useNavigate } from 'react-router-dom';
+import UserPost from '../components/UserPost';
 import { toast } from 'react-toastify';
 import { useLoginModal } from '../context/LoginModalContext';
-import UserPost from '../components/UserPost';
-
 
 
 interface UserType {
@@ -33,17 +31,17 @@ interface PostType {
     type: 'general';
 }
 
-const MyPosts = () => {
+const ArchivedPost = () => {
     const [posts, setPosts] = useState<PostType[]>([]);
 
-    const { token, setToken , deleteToken } = useToken()
+    const { token, setToken, deleteToken } = useToken()
     const { showLoginModal } = useLoginModal();
 
     useEffect(() => {
         const fetchPosts = async () => {
             try {
 
-                const response = await axios.get(`http://localhost:3000/user/posts?token=${token}`)
+                const response = await axios.get(`http://localhost:3000/user/archieved-posts?token=${token}`)
 
                 if (response.status === 200) {
                     setPosts(response.data.posts);
@@ -64,7 +62,7 @@ const MyPosts = () => {
                         const newToken = res.data.token;
                         setToken(newToken, "user");
 
-                        const response = await axios.get(`http://localhost:3000/user/posts?token=${newToken}`)
+                        const response = await axios.get(`http://localhost:3000/user/archieved-posts?token=${newToken}`)
 
                         if (response.status === 200) {
                             setPosts(response.data.posts);
@@ -94,10 +92,10 @@ const MyPosts = () => {
         if (token) fetchPosts();
     }, [token]);
 
-    const Archieve = async (id: string): Promise<void> => {
+    const UnArchieve = async (id: string): Promise<void> => {
         try {
             const response = await axios.patch(`http://localhost:3000/user/archivepost/${id}`, {
-                isArchieved: true
+                isArchieved: false
             }, {
                 headers: {
                     'Content-Type': 'application/json',
@@ -107,9 +105,9 @@ const MyPosts = () => {
 
             if (response.status === 200) {
                 setPosts(prev => prev.filter((post) => post._id !== id));
-                toast.success("Post archived successfully!");
+                toast.success("Post unarchived successfully!");
             } else {
-                toast.error(response.data.error || "Failed to archive post");
+                toast.error(response.data.error || "Failed to unarchive post");
             }
 
         } catch (error: any) {
@@ -119,13 +117,13 @@ const MyPosts = () => {
                     const res = await axios.get("http://localhost:3000/refresh-token", {
                         withCredentials: true,
                     });
-
-                    // If refresh token is successful, retry archieving the post
+                    // Save the new token
                     const newToken = res.data.token;
                     setToken(newToken, "user");
 
+                    // Retry unarchiving the post with the new token
                     const response = await axios.patch(`http://localhost:3000/user/archivepost/${id}`, {
-                        isArchieved: true
+                        isArchieved: false
                     }, {
                         headers: {
                             'Content-Type': 'application/json',
@@ -135,84 +133,18 @@ const MyPosts = () => {
 
                     if (response.status === 200) {
                         setPosts(prev => prev.filter((post) => post._id !== id));
-                        toast.success("Post archived successfully!");
+                        toast.success("Post unarchived successfully!");
                     } else {
-                        toast.error(response.data.error || "Failed to archive post");
+                        toast.error(response.data.error || "Failed to unarchive post");
                     }
 
-                } catch (error: any) {
-                    if (error.response?.status === 401) {
-                        // If refresh token failed, clear form data and show login modal
-                        toast.info("Session expired, please login again.");
-                        showLoginModal();
-                    }
-                    else {
-                        toast.error("Backend is down, please try again later.");
-                    }
+                } catch (refreshError) {
+                    toast.error("Session expired. Please login again.");
+                    deleteToken("user");
+                    showLoginModal();
                 }
-            }
-            else {
-                // Failed to create post
-                toast.error("Backend is down, please try again later.");
-            }
-        }
-    }
-
-    const DeletePost = async (id: string): Promise<void> => {
-        try {
-            const response = await axios.delete(`http://localhost:3000/user/deletepost/${id}`, {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            })
-
-            if (response.status === 200) {
-                setPosts(prev => prev.filter((post) => post._id !== id));
-                toast.success("Post Deleted successfully!");
             } else {
-                toast.error(response.data.error || "Failed to Delete post");
-            }
-
-        } catch (error: any) {
-            if (error.response?.status === 401) {
-                // Token expired, try to refresh
-                try {
-                    const res = await axios.get("http://localhost:3000/refresh-token", {
-                        withCredentials: true,
-                    });
-
-                    // If refresh token is successful, retry archieving the post
-                    const newToken = res.data.token;
-                    setToken(newToken, "user");
-
-                    const response = await axios.delete(`http://localhost:3000/user/deletepost/${id}`, {
-                        headers: {
-                            Authorization: `Bearer ${newToken}`
-                        }
-                    })
-
-                    if (response.status === 200) {
-                        setPosts(prev => prev.filter((post) => post._id !== id));
-                        toast.success("Post Deleted successfully!");
-                    } else {
-                        toast.error(response.data.error || "Failed to Delete post");
-                    }
-
-                } catch (error: any) {
-                    if (error.response?.status === 401) {
-                        // If refresh token failed, clear form data and show login modal
-                        toast.info("Session expired, please login again.");
-                        deleteToken("user");
-                        showLoginModal();
-                    }
-                    else {
-                        toast.error("Backend is down, please try again later.");
-                    }
-                }
-            }
-            else {
-                // Failed to create post
-                toast.error("Backend is down, please try again later.");
+                toast.error(error.message || "Backend is down. Please try again later.");
             }
         }
     }
@@ -220,7 +152,7 @@ const MyPosts = () => {
     if (!token) return (<div className='min-w-screen min-h-screen bg-black flex justify-center items-center text-gray-500 text-2xl'>
         <div className='flex items-center justify-center flex-col gap-3'>
             <p>Please login first to see your posts...</p>
-            <button className='bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 cursor-pointer' onClick={showLoginModal}>Log in</button>
+            <button className='bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600' onClick={showLoginModal}>Log in</button>
         </div>
     </div>
     )
@@ -229,7 +161,7 @@ const MyPosts = () => {
         <div id="posts" className="max-w-screen min-h-screen bg-black pt-[70px] pb-[55px] pl-[350px] px-5 ">
             {posts.length > 0 ? (
                 posts.map((post) => (
-                    <UserPost post={post} archieved={false} Archieve={Archieve} DeletePost={DeletePost} />
+                    <UserPost post={post} archieved={true} UnArchieve={UnArchieve} />
                 ))
             ) : (
                 <p className="text-gray-500 text-sm text-center">You haven't posted anything yet.</p>
@@ -239,4 +171,4 @@ const MyPosts = () => {
     )
 }
 
-export default MyPosts
+export default ArchivedPost

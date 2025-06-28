@@ -6,15 +6,18 @@ import { TokenProvider } from './context/TokenProvider.tsx';
 import { LoginModalProvider } from './context/LoginModalContext.tsx';
 import './index.css'
 import App from './App.tsx'
+import { SignupModalProvider } from './context/SignupModal.tsx';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <GoogleOAuthProvider clientId='439113069317-2sahsmav9eoppb7f9jqkqbuv1r2se6ik.apps.googleusercontent.com'>
+    <GoogleOAuthProvider clientId='439113069317-q1i4s4isn3k0f595c243h8qbqq8as7gf.apps.googleusercontent.com'>
       <BrowserRouter>
         <TokenProvider>
-          <LoginModalProvider>
-            <App />
-          </LoginModalProvider>
+            <LoginModalProvider>
+          <SignupModalProvider>
+              <App />
+          </SignupModalProvider>
+            </LoginModalProvider>
         </TokenProvider>
       </BrowserRouter>
     </GoogleOAuthProvider>

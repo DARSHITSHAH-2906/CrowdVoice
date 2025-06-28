@@ -20,8 +20,8 @@ interface FormDataType {
 }
 
 const AddCommunityPost = () => {
-    const { token } = useToken();
-    const {showModal} = useLoginModal();
+    const { token, deleteToken, setToken } = useToken();
+    const { showLoginModal } = useLoginModal();
     const location = useLocation();
     const navigate = useNavigate();
     const community = location.state?.community;
@@ -52,11 +52,11 @@ const AddCommunityPost = () => {
         })
     }
 
-    useEffect(()=>{
-        if(!token){
-            showModal();
-        }
-    },[])
+    // useEffect(() => {
+    //     if (!token) {
+    //         showLoginModal();
+    //     }
+    // }, [token])
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
@@ -87,17 +87,19 @@ const AddCommunityPost = () => {
         data.append('category', formData.category);
         data.append('location', formData.location);
         data.append('attachments', formData.externalLink);
-        data.append("tags" , formData.tags);
+        data.append("tags", formData.tags);
 
-        formData.images.forEach((file: File) => {
-            data.append("images", file);
-        })
-        formData.videos.forEach((file: File) => {
-            data.append("videos", file);
-        })
+        if (formData.images.length > 0) {
+            formData.images.forEach((file: File) => {
+                data.append("images", file);
+            });
+        }
 
-        for (const [key, value] of data.entries()) {
-            console.log(key, value);
+        // Append videos
+        if (formData.videos.length > 0) {
+            formData.videos.forEach((file: File) => {
+                data.append("videos", file);
+            });
         }
 
         try {
@@ -119,11 +121,54 @@ const AddCommunityPost = () => {
                 toast.error(response.data.error);
             }
         } catch (error: any) {
-            toast.error(error.response?.data?.message || "Error while posting");
+            if (error.response?.status === 401) {
+                // Token expired, try to refresh
+                try {
+                    const res = await axios.get("http://localhost:3000/refresh-token", {
+                        withCredentials: true,
+                    });
+                    // Save the new token
+                    const newToken = res.data.token;
+                    setToken(newToken, "user");
+
+                    // Retry adding post to community
+                    const retryResponse = await axios.post(
+                        `http://localhost:3000/community/add-post/${community._id}`,
+                        data,
+                        {
+                            headers: {
+                                Authorization: `Bearer ${newToken}`,
+                                'Content-Type': 'multipart/form-data',
+                            },
+                        }
+                    );
+                    if (retryResponse.status === 200) {
+                        toast.success("Post created successfully!");
+                        navigate(`/community/${community.name}`, { state: { community } });
+                    } else {
+                        toast.error(retryResponse.data.error);
+                    }
+                } catch (refreshError) {
+                    toast.error("Session expired. Please login again.");
+                    deleteToken("user");
+                    showLoginModal();
+                }
+            } else {
+                toast.error(error.message || "Backend is down. Please try again later.");
+            }
+
         }
 
         clearformData();
     };
+
+    if (!token) return (<div className='min-w-screen min-h-screen bg-black flex justify-center items-center text-gray-500 text-2xl'>
+        <div className='flex items-center justify-center flex-col gap-3'>
+            <p>Please login first to add post</p>
+            <button className='bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600' onClick={showLoginModal}>Log in</button>
+        </div>
+    </div>
+    )
 
     if (!community) {
         return <div className="text-white text-xl">No community found.</div>;
@@ -170,7 +215,7 @@ const AddCommunityPost = () => {
                             accept="image/*"
                             onChange={(e) => handleFileChange(e, 'images')}
                             className="w-full border p-2 rounded-lg"
-                            
+
                         />
                     </div>
 
@@ -182,7 +227,7 @@ const AddCommunityPost = () => {
                             accept="video/*"
                             onChange={(e) => handleFileChange(e, 'videos')}
                             className="w-full border p-2 rounded-lg"
-                            
+
                         />
                     </div>
 

@@ -24,7 +24,7 @@ const Communities = () => {
             .catch((error) => toast.error(error))
     }, [])
     return (
-        <div className='max-w-screen min-h-screen bg-black/90 pt-[70px] pb-[55px] pl-[350px] px-5 flex gap-25'>
+        <div className='max-w-screen min-h-screen bg-black pt-[70px] pb-[55px] pl-[350px] px-5 flex gap-25'>
             {communities ? <div id="communities" className='w-[45vw] flex flex-col gap-5'>
                 {
                     communities.map((community) => <CommunityCard community={community} />)

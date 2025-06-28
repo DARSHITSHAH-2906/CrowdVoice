@@ -1,9 +1,9 @@
-import React , {useState} from 'react';
+import React, { useState } from 'react';
 import { GoogleLogin } from '@react-oauth/google';
 import { IoMdClose } from "react-icons/io";
 import axios from 'axios';
 // import { IoBody } from 'react-icons/io5';
-import {toast} from "react-toastify"
+import { toast } from "react-toastify"
 import { useToken } from "../context/TokenProvider"
 
 interface LoginModalProps {
@@ -11,41 +11,41 @@ interface LoginModalProps {
 }
 
 const SignupModal = ({ onClose }: LoginModalProps) => {
-    const {setcookie} = useToken();
+    const { setToken } = useToken();
 
     const [email, setEmail] = useState<string>(' ');
     const [password, setPassword] = useState<string>('');
     const [name, setName] = useState<string>('');
 
-    const handlesubmit = async (event : React.FormEvent)=>{
+    const handlesubmit = async (event: React.FormEvent) => {
         event.preventDefault();
 
-        try{
-            const response = await axios.post("http://localhost:300/user/signup" , JSON.stringify({
-                email , password , name
-            }),{
-                headers:{
-                    "Content-Type": "application/json"
+        try {
+            const response = await axios.post("http://localhost:300/user/signup", { email, password, name }, {
+                withCredentials: true, // Ensure cookies are sent with the request
+                headers: {
+                    "Content-Type": "application/json",
                 }
             });
 
-            if(response.status === 200){
-                const {token , message , name} = response.data;
-                setcookie("user" , token , 1);
-                localStorage.setItem("username" , name)
+            if (response.status === 200) {
+                const { token, message, name } = response.data;
+                // setcookie("user", token, 1);
+                setToken(token, "user");
+                localStorage.setItem("username", name)
                 toast.success(message);
                 onClose();
-            }else{
+            } else {
                 toast.error(response.data.error);
             }
-        }catch(err){
+        } catch (err) {
             toast.error(`${err}`)
         }
     }
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm bg-black/30">
-            <div className="bg-black rounded-2xl shadow-xl p-8 w-[90%] max-w-md relative">
+            <div className="bg-black rounded-2xl shadow-xl p-8 w-[90%] max-w-md relative text-white">
                 <button
                     onClick={onClose}
                     className="absolute top-3 right-4 text-gray-500 hover:text-gray-400 text-2xl"
@@ -61,21 +61,21 @@ const SignupModal = ({ onClose }: LoginModalProps) => {
                         type="email"
                         placeholder="Email"
                         value={email}
-                        onChange={(e)=>setEmail(e.target.value)}
+                        onChange={(e) => setEmail(e.target.value)}
                         className="border p-2 rounded-lg w-full"
                     />
                     <input
                         type="password"
                         placeholder="Password"
                         value={password}
-                        onChange={(e)=> setPassword(e.target.value)}
+                        onChange={(e) => setPassword(e.target.value)}
                         className="border p-2 rounded-lg w-full"
                     />
                     <input
                         type="text"
                         placeholder="Username"
                         value={name}
-                        onChange={(e)=> setName(e.target.value)}
+                        onChange={(e) => setName(e.target.value)}
                         className="border p-2 rounded-lg w-full"
                     />
                     <button
@@ -97,25 +97,26 @@ const SignupModal = ({ onClose }: LoginModalProps) => {
                     <GoogleLogin
                         onSuccess={async (response) => {
                             const idToken = response.credential;
-                            console.log(idToken)
                             const res = await axios.post("http://localhost:3000/user/signup/google",
-                                JSON.stringify({
-                                    token: idToken
-                                }),
                                 {
+                                    token: idToken
+                                },
+                                {
+                                    withCredentials: true, // Ensure cookies are sent with the request
                                     headers: {
                                         "Content-Type": "application/json",
                                     }
-                                },
+                                }
                             )
-                            
-                            if(res.status === 200){
-                                const {token , message , name} = res.data
-                                setcookie("user" , token , 1);
-                                localStorage.setItem("username" , name)
+
+                            if (res.status === 200) {
+                                const { token, message, name } = res.data
+                                // setcookie("user", token, 1);
+                                setToken(token, "user");
+                                localStorage.setItem("username", name)
                                 toast.success(message);
                                 onClose();
-                            }else{
+                            } else {
                                 toast.error(res.data.error);
                             }
                         }}

@@ -49,11 +49,11 @@ const PostCard = ({ post }: PostCardProps) => {
   const navigate = useNavigate();
   const media = [...post.images, ...post.videos];
   const { token } = useToken();
-  const { showModal } = useLoginModal()
+  const { showLoginModal } = useLoginModal()
 
   const SavePost = async () => {
     if (!token) {
-      showModal();
+      showLoginModal();
     } else {
       const post_id = post._id;
       const resposne = await axios.patch(`http://localhost:3000/user/save-post`, {
@@ -71,8 +71,6 @@ const PostCard = ({ post }: PostCardProps) => {
       }
     }
   }
-
-  console.log(post)
 
   return (
     <main className="bg-[#121316] text-white p-6 rounded-2xl shadow-xl mb-8 w-full max-w-2xl mx-auto min-h-[650px] hover:bg-black/40 cursor-pointer">

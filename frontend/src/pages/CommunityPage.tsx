@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { formatDistanceToNow } from "date-fns"
 import axios from 'axios';
@@ -44,15 +44,11 @@ interface CommunityType {
 const CommunityPage = () => {
     const { state } = useLocation();
     const community: null | CommunityType = state.community;
-    console.log(community)
 
-    const communityRef = useRef<string | null | CommunityType>(community)
     const [communitydetails, setCommunitydetails] = useState<CommunityType | null>(null);
 
-    const { token } = useToken();
-    const tokenRef = useRef(token)
-
-    const { showModal } = useLoginModal();
+    const { token , setToken, deleteToken } = useToken();
+    const { showLoginModal } = useLoginModal();
 
     const navigate = useNavigate();
 
@@ -64,24 +60,18 @@ const CommunityPage = () => {
     }
 
     useEffect(() => {
-        if (community) communityRef.current = community._id;
-
-        if (communityRef.current) {
+        if (community._id) {
             axios.get(`http://localhost:3000/community/fetchdetails/${community._id}`)
                 .then((response) => setCommunitydetails(response.data.communitydata))
                 .catch((error) => toast.error(error))
         }
     }, []);
 
-    useEffect(() => {
-        tokenRef.current = token;
-    }, [token])
-
     const handleJoinCommunity = async () => {
-        if (tokenRef.current) {
+        if (token) {
             try {
                 const response = await axios.patch(`http://localhost:3000/community/add-member/${community._id}`, {
-                    token: tokenRef.current
+                    token: token
                 })
 
                 if (response.status === 200) {
@@ -94,13 +84,34 @@ const CommunityPage = () => {
                         };
                     });
 
+                }else{
+                    toast.error(response.data.error || "Failed to join community");
                 }
-            } catch (err) {
-                console.log(err);
+            } catch (error : any) {
+                if (error.response?.status === 401) {
+                    // Token expired, try to refresh
+                    try {
+                        const res = await axios.get("http://localhost:3000/refresh-token", {
+                            withCredentials: true,
+                        });
+                        // Save the new token
+                        const newToken = res.data.token;
+                        setToken(newToken, "user");
+
+                        // Retry joining community with the new token
+                        await handleJoinCommunity();
+
+                    } catch (refreshError) {
+                        toast.error("Session expired. Please login again.");
+                        deleteToken("user");
+                        showLoginModal();
+                    }
+                } else {
+                    toast.error(error.message || "Backend is down. Please try again later.");
+                }
             }
         } else {
-            console.log(tokenRef.current)
-            showModal();
+            showLoginModal();
         }
     }
 
@@ -108,13 +119,13 @@ const CommunityPage = () => {
         communitydetails ? <div className="max-w-screen min-h-screen bg-black/90 pt-[70px] pb-[55px] pl-[350px] pr-[50px]">
             <div className='relative max-w-full bg-black p-2  rounded-xl'>
                 {/* Cover Image */}
-                <div className=" h-[200px] w-full rounded-lg overflow-hidden">
+                <div className=" h-[300px] w-full rounded-lg overflow-hidden">
                     <img
                         src={communitydetails.coverImage}
                         alt="Cover"
                         className="w-full h-full object-fill"
                     />
-                    <div className="absolute top-[200px] -translate-y-1/2 left-6 w-30 h-30 bg-white rounded-full border-4 border-gray-800">
+                    <div className="absolute top-[300px] -translate-y-1/2 left-6 w-30 h-30 bg-white rounded-full border-4 border-gray-800">
                         <img
                             src={communitydetails.profilePic}
                             alt="Logo"

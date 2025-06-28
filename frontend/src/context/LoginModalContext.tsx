@@ -3,8 +3,8 @@ import React, { createContext, useContext, useState } from 'react';
 import LoginModal from '../components/Login';
 
 interface LoginModalContextType {
-  showModal: () => void;
-  hideModal: () => void;
+  showLoginModal: () => void;
+  hideLoginModal: () => void;
 }
 
 const LoginModalContext = createContext<LoginModalContextType | undefined>(undefined);
@@ -18,13 +18,13 @@ export const useLoginModal = () => {
 export const LoginModalProvider = ({ children }: { children: React.ReactNode }) => {
   const [isVisible, setIsVisible] = useState(false);
 
-  const showModal = () => setIsVisible(true);
-  const hideModal = () => setIsVisible(false);
+  const showLoginModal = () => setIsVisible(true);
+  const hideLoginModal = () => setIsVisible(false);
 
   return (
-    <LoginModalContext.Provider value={{ showModal, hideModal }}>
+    <LoginModalContext.Provider value={{ showLoginModal, hideLoginModal }}>
       {children}
-      {isVisible && <LoginModal onClose={hideModal} />}
+      {isVisible && <LoginModal onClose={hideLoginModal} />}
     </LoginModalContext.Provider>
   );
 };

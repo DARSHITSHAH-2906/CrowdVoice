@@ -1,8 +1,9 @@
 import React, { useState } from 'react'
 import { useToken } from '../context/TokenProvider'
 import axios from 'axios'
-// import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { useLoginModal } from '../context/LoginModalContext';
 
 interface FormDataType {
     title: string;
@@ -26,9 +27,10 @@ const categories = [
 ];
 
 const RaiseIssue = () => {
-    const { token } = useToken();
+    const { token, setToken, deleteToken } = useToken();
+    const { showLoginModal } = useLoginModal();
 
-    // const navigate = useNavigate();
+    const navigate = useNavigate();
 
     const [formData, setFormData] = useState<FormDataType>({
         title: '',
@@ -40,16 +42,6 @@ const RaiseIssue = () => {
         urgency: '',
         tags: '',
     });
-    
-    if (!token) {
-        return (
-            <div className="min-h-screen flex items-center justify-center bg-black">
-                <span className="text-xl text-gray-200">
-                    Please login first to raise an issue.
-                </span>
-            </div>
-        )
-    }
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
@@ -93,42 +85,83 @@ const RaiseIssue = () => {
         data.append("tags", formData.tags);
 
         // Append images (make sure each file is appended individually under the same key)
-        if(formData.images.length > 0){
+        if (formData.images.length > 0) {
             formData.images.forEach((file: File) => {
                 data.append("images", file);
             });
         }
 
         // Append videos
-        if(formData.videos.length > 0){
+        if (formData.videos.length > 0) {
             formData.videos.forEach((file: File) => {
                 data.append("videos", file);
             });
         }
 
         // Now send this data using axios/fetch to your backend
-        for (const [key, value] of data.entries()) {
-            console.log("FormData:", key, value);
-        }
-
-        try{
+        try {
             const response = await axios.post("http://localhost:3000/post/create", data, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                     'Authorization': `Bearer ${token}`
                 }
             })
-    
-            if (response.status === 200) {
-                toast.success(response.data.message);
-            } else {
+            // Post created successfully
+            if (response.status !== 200) {
                 toast.error(response.data.error);
+            } else {
+                toast.success(response.data.message);
+                navigate("/");
             }
-        }catch(err){
-            console.log(err);
+        } catch (error: any) {
+            if (error.response?.status === 401) {
+                // Token expired, try to refresh
+                try {
+                    const res = await axios.get("http://localhost:3000/refresh-token", {
+                        withCredentials: true,
+                    });
+                    
+                    // If refresh token is successful, retry the post request
+                    const newToken = res.data.token;
+                    setToken(newToken, "user");
+                    const retryResponse = await axios.post("http://localhost:3000/post/create", data, {
+                        headers: {
+                            'Content-Type': 'multipart/form-data',
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
+
+                    // Check if retry was successful
+                    if (retryResponse.status === 200) {
+                        toast.success(retryResponse.data.message);
+                        navigate("/");
+                    } else {
+                        toast.error(retryResponse.data.error);
+                    }
+                } catch (err) {
+                    // If refresh token failed, clear form data and show login modal
+                    clearformData();
+                    deleteToken("user");
+                    toast.info("Session expired, please login again.");
+                    showLoginModal();
+                }
+            }
+            else {
+                // Failed to create post
+                toast.error("Backend is down, please try again later.");
+            }
+
         }
         clearformData();
     };
+
+    if (!token) return (<div className='min-w-screen min-h-screen bg-black flex justify-center items-center text-gray-500 text-2xl'>
+        <div className='flex items-center justify-center flex-col gap-3'>
+            <p>Please login first to raise issue</p>
+            <button className='bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600' onClick={showLoginModal}>Log in</button>
+        </div>
+    </div>
+    )
 
     return (
         <div className='max-w-screen min-h-screen bg-black pt-[70px] pb-[40px] flex justify-center text-white'>
@@ -207,7 +240,7 @@ const RaiseIssue = () => {
                             accept="image/*"
                             onChange={(e) => handleFileChange(e, 'images')}
                             className="w-full border p-2 rounded-lg"
-                            
+
                         />
                     </div>
 
@@ -219,7 +252,7 @@ const RaiseIssue = () => {
                             accept="video/*"
                             onChange={(e) => handleFileChange(e, 'videos')}
                             className="w-full border p-2 rounded-lg"
-                            
+
                         />
                     </div>
 

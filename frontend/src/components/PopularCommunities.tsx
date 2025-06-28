@@ -25,13 +25,13 @@ const PopularCommunity = () => {
         <aside
             className={`
         sticky top-[70px] mt-[100px] 
-        w-[25vw] mr-[10px] max-w-sm bg-black rounded-2xl px-4 py-4
+        w-[25vw] mr-[10px] max-w-sm bg-gray-600 rounded-2xl px-4 py-4
         flex flex-col gap-4 
         ${seeMore ? "max-h-[90vh] overflow-auto" : "max-h-max"}
       `}
         >
             {/* Title */}
-            <h2 className="text-gray-500 text-xl font-semibold">Popular Communities</h2>
+            <h2 className="text-white text-xl font-semibold">Popular Communities</h2>
 
             {/* Issue List */}
             <div className={`flex flex-col gap-2  ${seeMore ? "max-h-max" : "max-h-[30vh] overflow-hidden"}`}>

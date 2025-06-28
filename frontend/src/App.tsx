@@ -1,5 +1,4 @@
 import Home from "./pages/Home"
-// import Popular from "./pages/Popular"
 import RaiseIssue from "./pages/RaiseIssue"
 import PostPage from "./pages/PostPage"
 import MyPosts from "./pages/MyPosts"
@@ -10,6 +9,7 @@ import MyCommunities from "./pages/MyCommunities"
 import AddCommunityPost from "./pages/CommunityIssuePage"
 import SavedPosts from "./pages/SavedPosts"
 import InProgressPage from "./pages/ProgressPage"
+import ArchivedPost from "./pages/ArchievedPosts"
 
 import Navbar from "./components/Navbar"
 import SideBar from "./components/SideBar"
@@ -33,8 +33,8 @@ function App() {
         <Route path="/popular" element={<InProgressPage />}></Route>
         <Route path="/raise-issue" element={<RaiseIssue />}></Route>
         <Route path="/post/:title" element={<PostPage />}></Route>
-        <Route path="/my-posts" element={<MyPosts archieved={false} />}></Route>
-        <Route path="/archieved-posts" element={<MyPosts archieved={true} />} ></Route>
+        <Route path="/my-posts" element={<MyPosts />}></Route>
+        <Route path="/archieved-posts" element={<ArchivedPost />} ></Route>
         <Route path="/new-community" element={<NewCommunity />}></Route>
         <Route path="/community/:name" element={<CommunityPage />}></Route>
         <Route path="/communities" element={<Communities />}></Route>

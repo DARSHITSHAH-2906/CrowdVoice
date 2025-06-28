@@ -11,15 +11,15 @@ interface LoginModalProps {
 
 const LoginModal = ({ onClose }: LoginModalProps) => {
 
-    const { setcookie } = useToken()
+    const { setToken } = useToken()
 
     const[email , setEmail] = useState<string>('');
     const[password, setPassword] = useState<string>('');
 
     const handleGoogleLogin = async (token:string):Promise<void>=>{
-        const response = await axios.post("http://localhost:3000/user/auth/google" , JSON.stringify({
+        const response = await axios.post("http://localhost:3000/user/auth/google" , {
             token:token
-        }) , {
+        } , {
             headers: {
                 'Content-Type': 'application/json',
             }
@@ -27,7 +27,7 @@ const LoginModal = ({ onClose }: LoginModalProps) => {
 
         if(response.status === 200){
             const {token , message , name} = response.data;
-            setcookie("user",token,1);
+            setToken(token, "user");
             localStorage.setItem("username" , name);
             toast.success(message);
             onClose()
@@ -48,7 +48,7 @@ const LoginModal = ({ onClose }: LoginModalProps) => {
 
         if(response.status === 200){
             const {token , message , username} = response.data;
-            setcookie("user",token,1);
+            setToken(token, "user");
             localStorage.setItem("username" , username);
             toast.success(message);
             onClose();

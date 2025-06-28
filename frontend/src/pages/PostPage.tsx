@@ -9,6 +9,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { FaRegThumbsUp, FaRegThumbsDown } from 'react-icons/fa';
 import { AiOutlineComment } from 'react-icons/ai';
+import { useLoginModal } from '../context/LoginModalContext';
 
 interface UserType {
     _id: string;
@@ -26,7 +27,8 @@ const PostPage = () => {
     const { state } = useLocation();
     const post = state?.post;
 
-    const { token } = useToken();
+    const { token , setToken , deleteToken } = useToken();
+    const { showLoginModal } = useLoginModal();
 
     const [comment, setcomment] = useState<string>('');
     const [comments, setComments] = useState<CommentType[]>([]);
@@ -42,18 +44,56 @@ const PostPage = () => {
     const handleCommentSubmit = async () => {
         if (!comment.trim()) return;
 
-        axios.post("http://localhost:3000/post/add-comment", JSON.stringify({ comment, post_id: post._id }), {
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            }
-        })
-            .then((response) => {
-                const newComment: CommentType = response.data
-                setComments(prev => [...prev, newComment])
+        try{
+            const response  = await axios.post("http://localhost:3000/post/add-comment", { comment, post_id: post._id }, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }
             })
-            .catch((error) => toast.error(error))
-            .finally(() => setcomment(''));
+                .then((response) => {
+                    const newComment: CommentType = response.data
+                    setComments(prev => [...prev, newComment])
+                })
+                .catch((error) => toast.error(error))
+                .finally(() => setcomment(''));
+        }catch(error : any){
+            if (error.response?.status === 401) {
+                // Token expired, try to refresh
+                try {
+                    const res = await axios.get("http://localhost:3000/refresh-token", {
+                        withCredentials: true,
+                    });
+                    
+                    // If refresh token is successful
+                    const newToken = res.data.token;
+                    setToken(newToken, "user");
+                    const retryResponse = await axios.post("http://localhost:3000/post/add-comment", { comment, post_id: post._id }, {
+                        headers: {
+                            'Content-Type': 'multipart/form-data',
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
+
+                    // Check if retry was successful
+                    if (retryResponse.status === 200) {
+                        toast.success(retryResponse.data.message);
+                        navigate("/");
+                    } else {
+                        toast.error(retryResponse.data.error);
+                    }
+                } catch (err) {
+                    // If refresh token failed, clear form data and show login modal
+                    toast.info("Session expired, please login again.");
+                    deleteToken("user");
+                    showLoginModal();
+                }
+            }
+            else {
+                // Failed to create post
+                toast.error("Backend is down, please try again later.");
+            }
+        }
 
     };
 

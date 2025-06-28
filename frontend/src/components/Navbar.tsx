@@ -4,13 +4,15 @@ import { IoSearchOutline } from 'react-icons/io5';
 import { useNavigate } from 'react-router-dom';
 
 import { useToken } from '../context/TokenProvider';
-import {useLoginModal} from "../context/LoginModalContext"
+import { useLoginModal } from "../context/LoginModalContext"
+import { useSignupModal } from '../context/SignupModal';
 
 const Navbar = () => {
 
-    const {token , deletecookie} = useToken();
+    const { token, deleteToken } = useToken();
 
-    const {showModal} = useLoginModal();
+    const { showLoginModal } = useLoginModal();
+    const { showSignupModal } = useSignupModal();
     const navigate = useNavigate();
 
     return (
@@ -24,7 +26,7 @@ const Navbar = () => {
                         alt="Logo"
                         className="w-[40px] h-[40px] rounded-full object-cover"
                     />
-                    <span className="text-2xl font-semibold tracking-wide text-white hover:underline cursor-pointer" onClick={()=>navigate("/")}>
+                    <span className="text-2xl font-semibold tracking-wide text-white hover:underline cursor-pointer" onClick={() => navigate("/")}>
                         CrowdVoice
                     </span>
                 </div>
@@ -49,28 +51,26 @@ const Navbar = () => {
                     </Link>
                     {!token && <> <button
                         className="text-sm font-medium px-4 py-2 bg-white text-black hover:bg-gray-200 rounded-lg transition cursor-pointer"
-                        onClick={() => showModal()}
+                        onClick={() => showLoginModal()}
                     >
                         Log in
                     </button>
                         <button
                             className="text-sm font-medium px-4 py-2 bg-white text-black hover:bg-gray-200 rounded-lg transition cursor-pointer"
-                            onClick={() => showModal()}
+                            onClick={() => showSignupModal()}
                         >
                             Sign Up
-                        </button> </>}
+                        </button> 
+                    </>}
+                    
                     {/* User Profile */}
                     {
                         token && <button>{localStorage.getItem("username")}</button>
                     }
                     {
-                        token && <button className='text-sm font-medium px-4 py-2 bg-white text-black hover:bg-gray-200 rounded-lg transition cursor-pointer' onClick={()=> deletecookie("user")}>Log Out</button>
+                        token && <button className='text-sm font-medium px-4 py-2 bg-white text-black hover:bg-gray-200 rounded-lg transition cursor-pointer' onClick={() => deleteToken("user")}>Log Out</button>
                     }
-
                 </div>
-
-
-
             </div>
         </nav>
     );
