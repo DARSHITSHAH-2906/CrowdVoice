@@ -34,7 +34,7 @@ const PopularIssues = () => {
             key={index}
             className="text-sm text-black bg-gray-300 rounded-lg px-3 py-2 hover:bg-gray-400 transition-colors flex justify-between"
           >
-            <Link to={`/posts?category=${category[0]}`}>{category[0]}</Link>
+            <Link to={`/posts?category=${category[0]}`} className='hover:underline'>{category[0]}</Link>
             <span>{category[1]} Posts</span>
           </span>
         ))}

@@ -13,6 +13,7 @@ import ArchivedPost from "./pages/ArchievedPosts"
 import AdminNgoPanel from "./pages/AdminNgoPanel"
 import CreateNgo from "./pages/CreateNgo"
 import NgoList from "./pages/Ngo"
+import Category from "./pages/Category"
 
 import Navbar from "./components/Navbar"
 import SideBar from "./components/SideBar"
@@ -39,6 +40,7 @@ function App() {
         <Route path="/:name/saved-posts" element={ <SavedPosts/>}></Route>
 
         <Route path="/post/:title" element={<PostPage />}></Route>
+        <Route path="/posts" element={<Category sideBar={sideBar}/>}></Route>
 
         <Route path="/new-community" element={<NewCommunity />}></Route>
         <Route path="/community/:name" element={<CommunityPage />}></Route>
