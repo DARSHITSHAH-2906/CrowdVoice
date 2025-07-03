@@ -54,6 +54,7 @@ const PostCard = ({ post }: PostCardProps) => {
   const [dislikes, setDislikes] = useState(post.dislikes.length);
   const [isLiked, setIsLiked] = useState(post.likes.includes(localStorage.getItem("uid") || ""));
   const [isDisLiked, setIsDisLiked] = useState(post.dislikes.includes(localStorage.getItem("uid") || ""));
+  console.log(isLiked , isDisLiked)
 
   const SavePost = async () => {
     if (!token) {
