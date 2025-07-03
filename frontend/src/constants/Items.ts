@@ -1,6 +1,6 @@
 import { MdArchive } from "react-icons/md";
 import {
-    IoHomeOutline, IoFlameOutline, IoDocumentTextOutline, IoBookmarkOutline, IoSettingsOutline, IoPersonOutline, IoAddCircleOutline, IoNotificationsOutline, IoHelpCircleOutline, IoLogOutOutline, IoBusinessOutline, IoPeopleOutline, IoCalendarOutline, IoMenuSharp
+    IoHomeOutline, IoFlameOutline, IoDocumentTextOutline, IoBookmarkOutline, IoSettingsOutline, IoPersonOutline, IoAddCircleOutline, IoNotificationsOutline, IoHelpCircleOutline, IoBusinessOutline, IoPeopleOutline, IoCalendarOutline
 } from 'react-icons/io5';
 
 const navSections = [
