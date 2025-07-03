@@ -288,11 +288,11 @@ const PostCard = ({ post }: PostCardProps) => {
       {/* Actions */}
       <div className="flex items-center justify-between border-t border-gray-700 pt-4 mt-4">
         <div className="flex gap-6 items-center">
-          <button className={`flex items-center gap-2 text-gray-400 hover:text-green-400 transition ${isLiked ? "bg-green-400" : ""}`} onClick={() => likePost()}>
+          <button className={`flex items-center gap-2 text-gray-400 hover:text-green-400 transition ${isLiked ? "text-green-400" : ""}`} onClick={() => likePost()}>
             <FaRegThumbsUp />
             <span>Support ({likes})</span>
           </button>
-          <button className={`flex items-center gap-2 text-gray-400 hover:text-red-400 transition ${isDisLiked ? "bg-red-400" : ""}`} onClick={() => dislikePost()}>
+          <button className={`flex items-center gap-2 text-gray-400 hover:text-red-400 transition ${isDisLiked ? "text-red-400" : ""}`} onClick={() => dislikePost()}>
             <FaRegThumbsDown />
             <span>Unsupport ({dislikes})</span>
           </button>
