@@ -122,7 +122,6 @@ const PostCard = ({ post }: PostCardProps) => {
       });
 
       if (response.status === 200) {
-        toast.success("Post liked successfully!");
         setLikes(response.data.likes);
         setIsLiked(prev => !prev);
       } else {
@@ -146,7 +145,6 @@ const PostCard = ({ post }: PostCardProps) => {
           });
 
           if (response.status === 200) {
-            toast.success("Post liked successfully!");
             setLikes(response.data.likes);
             setIsLiked(prev => !prev);
           } else {
@@ -173,7 +171,6 @@ const PostCard = ({ post }: PostCardProps) => {
       });
 
       if (response.status === 200) {
-        toast.success("Post liked successfully!");
         setDislikes(response.data.dislikes);
         setIsDisLiked(prev => !prev);
       } else {
@@ -197,7 +194,6 @@ const PostCard = ({ post }: PostCardProps) => {
           });
 
           if (response.status === 200) {
-            toast.success("Post liked successfully!");
             setDislikes(response.data.dislikes);
             setIsDisLiked(prev => !prev);
           } else {
