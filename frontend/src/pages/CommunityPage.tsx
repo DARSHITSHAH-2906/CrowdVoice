@@ -69,6 +69,10 @@ const CommunityPage = () => {
 
     const handleJoinCommunity = async () => {
         if (token) {
+            if(!communitydetails?.members?.includes(localStorage.getItem("uid") || "")) {
+                toast.error("Please join community to post...");
+                return;
+            }
             try {
                 const response = await axios.patch(`http://localhost:3000/community/add-member/${community._id}`, {}, {
                     headers: {
