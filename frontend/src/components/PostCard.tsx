@@ -122,7 +122,11 @@ const PostCard = ({ post }: PostCardProps) => {
       });
 
       if (response.status === 200) {
-        setLikes(response.data.likes);
+        if (isLiked) {
+          setLikes(prev => prev - 1);
+        } else {
+          setLikes(prev => prev + 1);
+        }
         setIsLiked(prev => !prev);
       } else {
         toast.error(response.data.error || "Failed to like post");
@@ -145,7 +149,11 @@ const PostCard = ({ post }: PostCardProps) => {
           });
 
           if (response.status === 200) {
-            setLikes(response.data.likes);
+            if (isLiked) {
+              setLikes(prev => prev - 1);
+            } else {
+              setLikes(prev => prev + 1);
+            }
             setIsLiked(prev => !prev);
           } else {
             toast.error(response.data.error || "Failed to like post");
@@ -171,7 +179,11 @@ const PostCard = ({ post }: PostCardProps) => {
       });
 
       if (response.status === 200) {
-        setDislikes(response.data.dislikes);
+        if (isDisLiked) {
+          setDislikes(prev => prev - 1);
+        } else {
+          setDislikes(prev => prev + 1);
+        }
         setIsDisLiked(prev => !prev);
       } else {
         toast.error(response.data.error || "Failed to like post");
@@ -194,8 +206,11 @@ const PostCard = ({ post }: PostCardProps) => {
           });
 
           if (response.status === 200) {
-            setDislikes(response.data.dislikes);
-            setIsDisLiked(prev => !prev);
+            if (isDisLiked) {
+              setDislikes(prev => prev - 1);
+            } else {
+              setDislikes(prev => prev + 1);
+            } setIsDisLiked(prev => !prev);
           } else {
             toast.error(response.data.error || "Failed to like post");
           }
