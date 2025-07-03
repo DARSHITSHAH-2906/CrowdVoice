@@ -77,13 +77,14 @@ const MyCommunities = () => {
         if (token) fetchCommunities();
     }, [token]);
 
-if (!token) return (<div className='min-w-screen min-h-screen bg-black flex justify-center items-center text-gray-500 text-2xl'>
-        <div className='flex items-center justify-center flex-col gap-3'>
-            <p>Please login first to create community...</p>
-            <button className='bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600' onClick={showLoginModal}>Log in</button>
-        </div>
-    </div>
-    )
+if (!token) {
+        return (
+            <div className="max-w-3xl mt-[70px] mx-auto p-6 bg-black text-white shadow-[0px_0px_2px_0px_white] rounded-xl backdrop-blur-2xl flex flex-col text-xl items-center gap-2">
+                <p>Please login first to create community...</p>
+                <button onClick={showLoginModal} className="bg-blue-600 max-w-max py-2 px-4 rounded-xl cursor-pointer">Log in</button>
+            </div>
+        );
+    }
     return (
         <div id="my-communities" className={`max-w-screen min-h-screen bg-black pt-[70px] pb-[55px] pl-[350px] px-5 ${communities.length > 0 ? "" : "flex justify-center items=center"}`}>
             {
