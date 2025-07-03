@@ -24,7 +24,8 @@ const navSections = [
     {
         title: 'NGO',
         items: [
-            { name: "NGO'S", path: '/ngo', icon: IoBusinessOutline },
+            { name: "NGO'S", path: '/ngos', icon: IoBusinessOutline },
+            { name: "Register NGO", path: '/register-ngo', icon: IoBusinessOutline },
         ],
     },
     {
@@ -55,7 +56,7 @@ interface SideBarProps {
 }
 
 const SideBar = (props: SideBarProps) => {
-    const {deletecookie} = useToken()
+    const {deleteToken} = useToken()
     return (
         <aside className={`fixed max-h-screen z-2 ${props.sideBar ? "w-[250px]" : "w-[40px]"} top-[66px] bottom-0 left-0 bg-black border-r-1 border-gray-400 flex`}>
             <div className='w-[40px] h-full bg-black'></div>
@@ -79,7 +80,7 @@ const SideBar = (props: SideBarProps) => {
                                 </div>
                             </div>
                         ))}
-                        <button className='bg-white text-black flex items-center gap-2 ml-2 px-4 py-1 rounded-full text-md cursor-pointer' onClick={()=>deletecookie("user")}><IoLogOutOutline/>Log Out</button>
+                        <button className='bg-white text-black flex items-center gap-2 ml-2 px-4 py-1 rounded-full text-md cursor-pointer' onClick={()=>deleteToken("user")}><IoLogOutOutline/>Log Out</button>
                     </nav>
                 )}
             </nav>}

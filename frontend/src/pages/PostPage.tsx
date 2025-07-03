@@ -132,11 +132,11 @@ const PostPage = () => {
                     <div className="flex gap-6 items-center">
                         <button className="flex items-center gap-2 text-gray-400 hover:text-green-400 transition cursor-pointer">
                             <FaRegThumbsUp />
-                            <span>Support ({post.likes})</span>
+                            <span>Support ({post.likes.length})</span>
                         </button>
                         <button className="flex items-center gap-2 text-gray-400 hover:text-red-400 transition cursor-pointer">
                             <FaRegThumbsDown />
-                            <span>Unsupport ({post.dislikes})</span>
+                            <span>Unsupport ({post.dislikes.length})</span>
                         </button>
                         <button className="flex items-center gap-2 text-gray-400 hover:text-yellow-400 transition cursor-pointer" onClick={() => navigate(`/post/${post.title}`, { state: { post } })}>
                             <AiOutlineComment />

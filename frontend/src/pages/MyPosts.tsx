@@ -22,8 +22,8 @@ interface PostType {
     videos: string[];
     attachments: string[];
     tags: string;
-    likes: number;
-    dislikes: number;
+    likes: string[];
+  dislikes: string[];
     category: string;
     PlaceOfIncident: string;
     urgency: string;
@@ -45,7 +45,11 @@ const MyPosts = () => {
         const fetchPosts = async () => {
             try {
 
-                const response = await axios.get(`http://localhost:3000/user/posts?token=${token}`)
+                const response = await axios.get(`http://localhost:3000/user/posts`,{
+                    headers: {
+                        Authorization: `Bearer ${token}`    
+                    }
+                })
 
                 if (response.status === 200) {
                     setPosts(response.data.posts);
@@ -66,7 +70,11 @@ const MyPosts = () => {
                         const newToken = res.data.token;
                         setToken(newToken, "user");
 
-                        const response = await axios.get(`http://localhost:3000/user/posts?token=${newToken}`)
+                        const response = await axios.get(`http://localhost:3000/user/posts`,{
+                            headers: {
+                                Authorization: `Bearer ${newToken}`
+                            }
+                        })
 
                         if (response.status === 200) {
                             setPosts(response.data.posts);
@@ -77,8 +85,9 @@ const MyPosts = () => {
 
                     } catch (error: any) {
                         if (error.response?.status === 401) {
-                            // If refresh token failed, clear form data and show login modal
+                            // If refresh token failed, clear form data and show login modal.
                             toast.info("Session expired, please login again.");
+                            deleteToken("user");
                             showLoginModal();
                         }
                         else {
@@ -110,7 +119,6 @@ const MyPosts = () => {
             if (response.status === 200) {
                 setPosts(prev => prev.filter((post) => post._id !== id));
                 toast.success("Post archived successfully!");
-                navigate("/archieved-posts");
             } else {
                 toast.error(response.data.error || "Failed to archive post");
             }
@@ -160,6 +168,7 @@ const MyPosts = () => {
                 toast.error("Backend is down, please try again later.");
             }
         }
+        
     }
 
     const DeletePost = async (id: string): Promise<void> => {

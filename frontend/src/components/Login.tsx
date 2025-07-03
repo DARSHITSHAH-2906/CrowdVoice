@@ -13,46 +13,50 @@ const LoginModal = ({ onClose }: LoginModalProps) => {
 
     const { setToken } = useToken()
 
-    const[email , setEmail] = useState<string>('');
-    const[password, setPassword] = useState<string>('');
+    const [email, setEmail] = useState<string>('');
+    const [password, setPassword] = useState<string>('');
 
-    const handleGoogleLogin = async (token:string):Promise<void>=>{
-        const response = await axios.post("http://localhost:3000/user/auth/google" , {
-            token:token
-        } , {
+    const handleGoogleLogin = async (token: string): Promise<void> => {
+        const response = await axios.post("http://localhost:3000/user/auth/google", {
+            token: token
+        }, {
+            withCredentials: true, // Ensure cookies are sent with the request
             headers: {
                 'Content-Type': 'application/json',
             }
         });
 
-        if(response.status === 200){
-            const {token , message , name} = response.data;
+        if (response.status === 200) {
+            const { token, message, name , uid} = response.data;
             setToken(token, "user");
-            localStorage.setItem("username" , name);
+            localStorage.setItem("username", name);
+            localStorage.setItem("uid", uid);
             toast.success(message);
             onClose()
-        }else{
+        } else {
             toast.error(response.data.error)
         }
     }
 
-    const handleLogin = async (event : React.FormEvent): Promise<void> =>{
+    const handleLogin = async (event: React.FormEvent): Promise<void> => {
         event.preventDefault()
-        const response = await axios.post("http://localhost:3000/user/auth" , JSON.stringify({
-            email , password
-        }),{
+        const response = await axios.post("http://localhost:3000/user/auth", {
+            email, password
+        }, {
+            withCredentials: true, // Ensure cookies are sent with the request
             headers: {
                 'Content-Type': 'application/json',
             }
         });
 
-        if(response.status === 200){
-            const {token , message , username} = response.data;
+        if (response.status === 200) {
+            const { token, message, username, uid } = response.data;
             setToken(token, "user");
-            localStorage.setItem("username" , username);
+            localStorage.setItem("username", username);
+            localStorage.setItem("uid", uid);
             toast.success(message);
             onClose();
-        }else{
+        } else {
             toast.error(response.data.error)
         }
 
@@ -109,7 +113,7 @@ const LoginModal = ({ onClose }: LoginModalProps) => {
                     <GoogleLogin
                         onSuccess={(response) => {
                             const idToken = response.credential;
-                            if(!idToken){
+                            if (!idToken) {
                                 throw new Error("Token not available");
                             }
                             handleGoogleLogin(idToken);

@@ -79,7 +79,7 @@ const MyCommunities = () => {
 
 if (!token) return (<div className='min-w-screen min-h-screen bg-black flex justify-center items-center text-gray-500 text-2xl'>
         <div className='flex items-center justify-center flex-col gap-3'>
-            <p>Please login first to see your posts...</p>
+            <p>Please login first to create community...</p>
             <button className='bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600' onClick={showLoginModal}>Log in</button>
         </div>
     </div>
@@ -95,7 +95,7 @@ if (!token) return (<div className='min-w-screen min-h-screen bg-black flex just
             }
             {(!loading && communities.length === 0) && <div className=" flex flex-col items-center justify-center gap-4">
                 <span className='text-gray-500 text-xl'> Create your first community....</span>
-                <button className='w-3/4 p-4 bg-black rounded-xl text-white cursor-pointer hover:bg-black/50' onClick={() => navigate("/new-community")}>Create Community</button>
+                <button className='w-3/4 p-2 bg-white rounded-xl text-black cursor-pointer hover:bg-gray-200' onClick={() => navigate("/new-community")}>Create Community</button>
             </div>
             }
 

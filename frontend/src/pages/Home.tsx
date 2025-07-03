@@ -25,8 +25,8 @@ interface PostType {
   videos: string[];
   attachments: string[];
   tags: string;
-  likes: number;
-  dislikes: number;
+  likes: string[];
+  dislikes: string[];
   category: string;
   PlaceOfIncident: string;
   urgency: string;

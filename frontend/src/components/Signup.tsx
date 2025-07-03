@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { GoogleLogin } from '@react-oauth/google';
 import { IoMdClose } from "react-icons/io";
 import axios from 'axios';
-// import { IoBody } from 'react-icons/io5';
 import { toast } from "react-toastify"
 import { useToken } from "../context/TokenProvider"
 
@@ -29,10 +28,10 @@ const SignupModal = ({ onClose }: LoginModalProps) => {
             });
 
             if (response.status === 200) {
-                const { token, message, name } = response.data;
-                // setcookie("user", token, 1);
+                const { token, message, name, uid } = response.data;
                 setToken(token, "user");
                 localStorage.setItem("username", name)
+                localStorage.setItem("uid", uid);
                 toast.success(message);
                 onClose();
             } else {
@@ -40,6 +39,29 @@ const SignupModal = ({ onClose }: LoginModalProps) => {
             }
         } catch (err) {
             toast.error(`${err}`)
+        }
+    }
+
+    const handleGoogleSignUp = async (token: string): Promise<void> => {
+        const res = await axios.post("http://localhost:3000/user/signup/google",
+            { token: token },
+            {
+                withCredentials: true, // Ensure cookies are sent with the request
+                headers: {
+                    "Content-Type": "application/json",
+                }
+            }
+        )
+
+        if (res.status === 200) {
+            const { token, message, name, uid } = res.data
+            setToken(token, "user");
+            localStorage.setItem("username", name)
+            localStorage.setItem("uid", uid);
+            toast.success(message);
+            onClose();
+        } else {
+            toast.error(res.data.error);
         }
     }
 
@@ -97,28 +119,11 @@ const SignupModal = ({ onClose }: LoginModalProps) => {
                     <GoogleLogin
                         onSuccess={async (response) => {
                             const idToken = response.credential;
-                            const res = await axios.post("http://localhost:3000/user/signup/google",
-                                {
-                                    token: idToken
-                                },
-                                {
-                                    withCredentials: true, // Ensure cookies are sent with the request
-                                    headers: {
-                                        "Content-Type": "application/json",
-                                    }
-                                }
-                            )
-
-                            if (res.status === 200) {
-                                const { token, message, name } = res.data
-                                // setcookie("user", token, 1);
-                                setToken(token, "user");
-                                localStorage.setItem("username", name)
-                                toast.success(message);
-                                onClose();
-                            } else {
-                                toast.error(res.data.error);
+                            if (!idToken) {
+                                toast.error("Google Sign Up Failed");
+                                return;
                             }
+                            handleGoogleSignUp(idToken);
                         }}
                         onError={() => {
                             console.log("Google Login Failed");

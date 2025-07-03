@@ -41,6 +41,7 @@ export const TokenProvider = ({ children }: { children: React.ReactNode }) => {
                         const response = await axios.get("http://localhost:3000/refresh-token" , {
                             withCredentials: true,
                         });
+                        console.log("Token refreshed successfully" , response.data.token);
                         setToken(response.data.token, "user");
 
                     }catch(err : any){
@@ -58,7 +59,6 @@ export const TokenProvider = ({ children }: { children: React.ReactNode }) => {
     }, [])
 
     const deleteToken = (name: string) => {
-        console.log("Deleting token from localStorage");
         localStorage.removeItem(name);
         settoken(null);
     }

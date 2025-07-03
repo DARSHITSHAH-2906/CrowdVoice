@@ -20,8 +20,8 @@ interface PostType {
     videos: string[];
     attachments: string[];
     tags: string;
-    likes: number;
-    dislikes: number;
+    likes: string[];
+    dislikes: string[];
     category: string;
     PlaceOfIncident: string;
     urgency: string;
@@ -41,7 +41,11 @@ const ArchivedPost = () => {
         const fetchPosts = async () => {
             try {
 
-                const response = await axios.get(`http://localhost:3000/user/archieved-posts?token=${token}`)
+                const response = await axios.get(`http://localhost:3000/user/archieved-posts`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                })
 
                 if (response.status === 200) {
                     setPosts(response.data.posts);

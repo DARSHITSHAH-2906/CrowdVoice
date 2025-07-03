@@ -43,7 +43,7 @@ const CommunityCard = ({ community }: { community: CommunityType }) => {
 
         {/* Community Info */}
         <div className="flex flex-col justify-center">
-          <h2 className="text-xl font-bold text-white hover:underline">{name}</h2>
+          <h2 className="text-xl font-bold text-white hover:underline">@{name}</h2>
           <p className="text-gray-400 text-sm mt-1">{bio}</p>
           <div className="text-gray-500 text-xs mt-2 flex gap-3">
             <span>{membersCount} Members</span>

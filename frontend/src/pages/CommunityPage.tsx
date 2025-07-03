@@ -18,8 +18,8 @@ interface PostType {
     videos: string[];
     attachments: string[];
     tags: string;
-    likes: number;
-    dislikes: number;
+    likes: string[];
+    dislikes: string[];
     category: string;
     PlaceOfIncident: string;
     urgency: string;
@@ -47,7 +47,7 @@ const CommunityPage = () => {
 
     const [communitydetails, setCommunitydetails] = useState<CommunityType | null>(null);
 
-    const { token , setToken, deleteToken } = useToken();
+    const { token, setToken, deleteToken } = useToken();
     const { showLoginModal } = useLoginModal();
 
     const navigate = useNavigate();
@@ -55,7 +55,7 @@ const CommunityPage = () => {
     if (community === null) {
         return <main className=" bg-black h-screen w-screen flex justify-center items-center text-white text-xl flex-col gap-1">
             <span>Community not found or invalid navigation.</span>
-            <button className='bg-white text-black p-2 rounded-full cursor-pointer' onClick={()=>window.history.back()}>Go Back</button>
+            <button className='bg-white text-black p-2 rounded-full cursor-pointer' onClick={() => window.history.back()}>Go Back</button>
         </main>;
     }
 
@@ -70,8 +70,10 @@ const CommunityPage = () => {
     const handleJoinCommunity = async () => {
         if (token) {
             try {
-                const response = await axios.patch(`http://localhost:3000/community/add-member/${community._id}`, {
-                    token: token
+                const response = await axios.patch(`http://localhost:3000/community/add-member/${community._id}`, {}, {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
                 })
 
                 if (response.status === 200) {
@@ -84,10 +86,10 @@ const CommunityPage = () => {
                         };
                     });
 
-                }else{
+                } else {
                     toast.error(response.data.error || "Failed to join community");
                 }
-            } catch (error : any) {
+            } catch (error: any) {
                 if (error.response?.status === 401) {
                     // Token expired, try to refresh
                     try {
@@ -99,7 +101,25 @@ const CommunityPage = () => {
                         setToken(newToken, "user");
 
                         // Retry joining community with the new token
-                        await handleJoinCommunity();
+                        const response = await axios.patch(`http://localhost:3000/community/add-member/${community._id}`, {}, {
+                            headers: {
+                                Authorization: `Bearer ${newToken}`
+                            }
+                        })
+
+                        if (response.status === 200) {
+                            toast.success(response.data.message);
+                            setCommunitydetails((prev) => {
+                                if (!prev) return prev;
+                                return {
+                                    ...prev,
+                                    memberCount: prev.memberCount + 1
+                                };
+                            });
+
+                        } else {
+                            toast.error(response.data.error || "Failed to join community");
+                        }
 
                     } catch (refreshError) {
                         toast.error("Session expired. Please login again.");
@@ -137,7 +157,7 @@ const CommunityPage = () => {
                 {/* Community Info */}
                 <div className="mt-16 px-4 flex relative">
                     <div className='space-y-2'>
-                        <h1 className="text-gray-300 text-3xl font-bold hover:underline">{communitydetails.name}</h1>
+                        <h1 className="text-gray-300 text-3xl font-bold hover:underline">@{communitydetails.name}</h1>
                         <p className="text-gray-300 mt-2">{communitydetails.bio}</p>
                         <p className="text-gray-400 text-sm mt-1">
                             Created on: {formatDistanceToNow(communitydetails.createdAt, { addSuffix: true })}

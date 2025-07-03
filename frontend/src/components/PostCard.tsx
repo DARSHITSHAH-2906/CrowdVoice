@@ -1,4 +1,4 @@
-// import React from 'react';
+import { useState } from 'react';
 import { FaRegThumbsUp, FaRegThumbsDown, FaRegBookmark } from 'react-icons/fa';
 import { AiOutlineComment } from 'react-icons/ai';
 import { formatDistanceToNow } from "date-fns"
@@ -30,8 +30,8 @@ interface PostType {
   videos: string[];
   attachments: string[];
   tags: string;
-  likes: number;
-  dislikes: number;
+  likes: string[];
+  dislikes: string[];
   category: string;
   PlaceOfIncident: string;
   urgency: string;
@@ -48,32 +48,175 @@ interface PostCardProps {
 const PostCard = ({ post }: PostCardProps) => {
   const navigate = useNavigate();
   const media = [...post.images, ...post.videos];
-  const { token } = useToken();
+  const { token, setToken, deleteToken } = useToken();
   const { showLoginModal } = useLoginModal()
+  const [likes, setLikes] = useState(post.likes.length);
+  const [dislikes, setDislikes] = useState(post.dislikes.length);
+  const [isLiked, setIsLiked] = useState(post.likes.includes(localStorage.getItem("uid") || ""));
+  const [isDisLiked, setIsDisLiked] = useState(post.dislikes.includes(localStorage.getItem("uid") || ""));
 
   const SavePost = async () => {
     if (!token) {
       showLoginModal();
     } else {
       const post_id = post._id;
-      const resposne = await axios.patch(`http://localhost:3000/user/save-post`, {
-        post_id
-      }, {
-        headers: {
-          'Authorization': `Bearer ${token}`
+      try {
+        const resposne = await axios.patch(`http://localhost:3000/user/save-post`, {
+          post_id
+        }, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+        if (resposne.status === 200) {
+          toast.success(resposne.data.message);
+        } else {
+          toast.error(resposne.data.error);
         }
+      } catch (error: any) {
+        if (error.response?.status === 401) {
+          // Token expired, try to refresh
+          try {
+            const res = await axios.get("http://localhost:3000/refresh-token", {
+              withCredentials: true,
+            });
+            // Save the new token
+            const newToken = res.data.token;
+            setToken(newToken, "user");
+
+            // Retry
+            const resposne = await axios.patch(`http://localhost:3000/user/save-post`, {
+              post_id
+            }, {
+              headers: {
+                'Authorization': `Bearer ${newToken}`
+              }
+            });
+
+            if (resposne.status === 200) {
+              toast.success(resposne.data.message);
+            } else {
+              toast.error(resposne.data.error);
+            }
+
+          } catch (refreshError) {
+            toast.error("Session expired. Please login again.");
+            deleteToken("user");
+            showLoginModal();
+
+          }
+        } else {
+          toast.error(error.message || "Backend is down. Please try again later.");
+        }
+      }
+    }
+  }
+
+  const likePost = async () => {
+    try {
+      const response = await axios.patch(`http://localhost:3000/post/like-post/${post._id}`, {}, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
       });
 
-      if (resposne.status === 200) {
-        toast.success(resposne.data.message);
+      if (response.status === 200) {
+        toast.success("Post liked successfully!");
+        setLikes(response.data.likes);
+        setIsLiked(prev => !prev);
       } else {
-        toast.error(resposne.data.error);
+        toast.error(response.data.error || "Failed to like post");
+      }
+    } catch (error: any) {
+      if (error.response?.status === 401) {
+        // Token expired, try to refresh
+        try {
+          const res = await axios.get("http://localhost:3000/refresh-token", {
+            withCredentials: true,
+          });
+          const newToken = res.data.token;
+          setToken(newToken, "user");
+
+          // Retry liking the post
+          const response = await axios.patch(`http://localhost:3000/post/like-post/${post._id}`, {}, {
+            headers: {
+              'Authorization': `Bearer ${newToken}`,
+            },
+          });
+
+          if (response.status === 200) {
+            toast.success("Post liked successfully!");
+            setLikes(response.data.likes);
+            setIsLiked(prev => !prev);
+          } else {
+            toast.error(response.data.error || "Failed to like post");
+          }
+
+        } catch (refreshError) {
+          toast.error("Session expired. Please login again.");
+          deleteToken("user");
+          showLoginModal();
+        }
+      } else {
+        toast.error(error.message || "Backend is down. Please try again later.");
+      }
+    }
+  }
+
+  const dislikePost = async () => {
+    try {
+      const response = await axios.patch(`http://localhost:3000/post/dislike-post/${post._id}`, {}, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+
+      if (response.status === 200) {
+        toast.success("Post liked successfully!");
+        setDislikes(response.data.dislikes);
+        setIsDisLiked(prev => !prev);
+      } else {
+        toast.error(response.data.error || "Failed to like post");
+      }
+    } catch (error: any) {
+      if (error.response?.status === 401) {
+        // Token expired, try to refresh
+        try {
+          const res = await axios.get("http://localhost:3000/refresh-token", {
+            withCredentials: true,
+          });
+          const newToken = res.data.token;
+          setToken(newToken, "user");
+
+          // Retry liking the post
+          const response = await axios.patch(`http://localhost:3000/post/dislike-post/${post._id}`, {}, {
+            headers: {
+              'Authorization': `Bearer ${newToken}`,
+            },
+          });
+
+          if (response.status === 200) {
+            toast.success("Post liked successfully!");
+            setDislikes(response.data.dislikes);
+            setIsDisLiked(prev => !prev);
+          } else {
+            toast.error(response.data.error || "Failed to like post");
+          }
+
+        } catch (refreshError) {
+          toast.error("Session expired. Please login again.");
+          deleteToken("user");
+          showLoginModal();
+        }
+      } else {
+        toast.error(error.message || "Backend is down. Please try again later.");
       }
     }
   }
 
   return (
-    <main className="bg-[#121316] text-white p-6 rounded-2xl shadow-xl mb-8 w-full max-w-2xl mx-auto min-h-[650px] hover:bg-black/40 cursor-pointer">
+    <main className="bg-[#121316] text-white p-6 rounded-2xl shadow-xl mb-8 w-full max-w-2xl mx-auto min-h-[650px] hover:bg-black/40">
       <div>
         {/* Post Type */}
         <div className='border-b border-gray-700 p-2'>
@@ -90,7 +233,7 @@ const PostCard = ({ post }: PostCardProps) => {
               </div>
             }
             <div>
-              <p className="text-lg font-semibold text-gray-100 hover:underline" onClick={() => post.type === 'general' ? navigate(`/user/${post.postedBy.name}`, { state: { user: post.postedBy } }) : navigate(`/community/${post.postedBy.name}`, { state: { community: post.postedBy } })}>{post.postedBy.name}</p>
+              <p className="text-lg font-semibold text-gray-100 hover:underline" onClick={() => post.type === 'general' ? navigate(`/user/${post.postedBy.name}`, { state: { user: post.postedBy } }) : navigate(`/community/${post.postedBy.name}`, { state: { community: post.postedBy } })}>@{post.postedBy.name}</p>
               <p className="text-xs text-gray-500">{formatDistanceToNow(post.Postedon, { addSuffix: true })}</p>
             </div>
           </div>
@@ -101,9 +244,9 @@ const PostCard = ({ post }: PostCardProps) => {
 
         {/* Title & Description */}
         <div className="mb-4">
-          <h2 className="text-2xl font-bold text-gray-100 mb-2" onClick={() =>
-          navigate(`/post/${post.title}`, { state: { post } })
-        }>{post.title}</h2>
+          <h2 className="text-2xl font-bold text-gray-100 mb-2 cursor-pointer" onClick={() =>
+            navigate(`/post/${post.title}`, { state: { post } })
+          }>{post.title}</h2>
           <p className="text-sm text-gray-300 leading-relaxed">{post.description}</p>
         </div>
 
@@ -145,13 +288,13 @@ const PostCard = ({ post }: PostCardProps) => {
       {/* Actions */}
       <div className="flex items-center justify-between border-t border-gray-700 pt-4 mt-4">
         <div className="flex gap-6 items-center">
-          <button className="flex items-center gap-2 text-gray-400 hover:text-green-400 transition">
+          <button className={`flex items-center gap-2 text-gray-400 hover:text-green-400 transition ${isLiked ? "bg-green-400" : ""}`} onClick={() => likePost()}>
             <FaRegThumbsUp />
-            <span>Support ({post.likes})</span>
+            <span>Support ({likes})</span>
           </button>
-          <button className="flex items-center gap-2 text-gray-400 hover:text-red-400 transition">
+          <button className={`flex items-center gap-2 text-gray-400 hover:text-red-400 transition ${isDisLiked ? "bg-red-400" : ""}`} onClick={() => dislikePost()}>
             <FaRegThumbsDown />
-            <span>Unsupport ({post.dislikes})</span>
+            <span>Unsupport ({dislikes})</span>
           </button>
           <button className="flex items-center gap-2 text-gray-400 hover:text-yellow-400 transition" onClick={() => navigate(`/post/${post.title}`, { state: { post } })}>
             <AiOutlineComment />

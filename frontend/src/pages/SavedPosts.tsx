@@ -25,8 +25,8 @@ interface PostType {
   videos: string[];
   attachments: string[];
   tags: string;
-  likes: number;
-  dislikes: number;
+  likes: string[];
+  dislikes: string[];
   category: string;
   PlaceOfIncident: string;
   urgency: string;
@@ -97,7 +97,9 @@ const SavedPosts = () => {
     <main id="saved-posts" className='max-w-screen min-h-screen bg-black pt-[70px] pb-[55px] pl-[350px] px-5 flex gap-25'>
       <div id="posts" className='w-[45vw] flex flex-col gap-5'>
         {
-          posts && posts.map((post: PostType) => <PostCard post={post} />)
+          posts.length > 0 ? (posts.map((post: PostType) => <PostCard post={post} />)) : (
+            <p className="text-gray-500 text-sm text-center">You haven't saved any posts..</p>
+          )
         }
       </div>
     </main>
