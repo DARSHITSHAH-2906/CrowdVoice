@@ -69,10 +69,7 @@ const CommunityPage = () => {
 
     const handleJoinCommunity = async () => {
         if (token) {
-            if(!communitydetails?.members?.includes(localStorage.getItem("uid") || "")) {
-                toast.error("Please join community to post...");
-                return;
-            }
+
             try {
                 const response = await axios.patch(`http://localhost:3000/community/add-member/${community._id}`, {}, {
                     headers: {
@@ -139,6 +136,14 @@ const CommunityPage = () => {
         }
     }
 
+    const handleAddPost = () => {
+        if (!communitydetails?.members?.includes(localStorage.getItem("uid") || "")) {
+            toast.error("Please join community to post...");
+            return;
+        }
+        navigate("/add-community-post", { state: { community } })
+    }
+
     return (
         communitydetails ? <div className="max-w-screen min-h-screen bg-black/90 pt-[70px] pb-[55px] pl-[350px] pr-[50px]">
             <div className='relative max-w-full bg-black p-2  rounded-xl'>
@@ -173,7 +178,7 @@ const CommunityPage = () => {
                     {/* Action Buttons */}
                     <div className='absolute bottom-0 right-0 flex gap-3'>
                         <button className='bg-black text-white border-2 border-white rounded-full p-2 hover:bg-white hover:text-black cursor-pointer' onClick={handleJoinCommunity}>Join Community</button>
-                        <button className='bg-white text-black rounded-full py-2 px-4 hover:bg-gray-300 cursor-pointer' onClick={() => navigate("/add-community-post", { state: { community } })}>Add Post</button>
+                        <button className='bg-white text-black rounded-full py-2 px-4 hover:bg-gray-300 cursor-pointer' onClick={handleAddPost}>Add Post</button>
                     </div>
                 </div>
 
