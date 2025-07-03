@@ -216,7 +216,7 @@ const PostCard = ({ post }: PostCardProps) => {
   }
 
   return (
-    <main className="bg-[#121316] text-white p-6 rounded-2xl shadow-xl mb-8 w-full max-w-2xl mx-auto min-h-[650px] hover:bg-black/40">
+    <main className="bg-[#121316] text-white p-6 rounded-2xl shadow-xl mb-8 w-full max-w-2xl max-h-max mx-auto min-h-[650px] hover:bg-black/40">
       <div>
         {/* Post Type */}
         <div className='border-b border-gray-700 p-2'>
