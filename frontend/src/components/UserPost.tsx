@@ -75,8 +75,8 @@ const UserPost = ({ post, archieved, DeletePost, UnArchieve, Archieve }: UserPos
 
             {/* Stats Row */}
             <div className="flex justify-between items-center text-sm text-gray-400 mt-2">
-                <span><FaRegThumbsUp className='inline' /> {post.likes} Likes</span>
-                <span><FaRegThumbsDown className='inline' /> {post.dislikes} Dislikes</span>
+                <span><FaRegThumbsUp className='inline' /> {post.likes.length} Likes</span>
+                <span><FaRegThumbsDown className='inline' /> {post.dislikes.length} Dislikes</span>
                 <span className='cursor-pointer' onClick={() => navigate(`/post/${post.title}`, { state: { post } })}><AiOutlineComment className='inline' /> {post.comments?.length || 0} Comments</span>
             </div>
 
