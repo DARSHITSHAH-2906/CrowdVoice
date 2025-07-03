@@ -36,8 +36,8 @@ function App() {
         <Route path="/" element={<Home sideBar={sideBar}/>} />
         <Route path="/raise-issue" element={<RaiseIssue />}></Route>
         <Route path="/archieved-posts" element={<ArchivedPost />} ></Route>
-        <Route path="/my-posts" element={<MyPosts />}></Route>
-        <Route path="/:name/saved-posts" element={ <SavedPosts/>}></Route>
+        <Route path="/user-posts" element={<MyPosts />}></Route>
+        <Route path="/saved-posts" element={ <SavedPosts/>}></Route>
 
         <Route path="/post/:title" element={<PostPage />}></Route>
         <Route path="/posts" element={<Category sideBar={sideBar}/>}></Route>
