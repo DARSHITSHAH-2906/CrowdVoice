@@ -27,24 +27,24 @@ const AdminNgoPanel: React.FC = () => {
   };
 
   const handleCreateNgo = async (e: React.FormEvent) => {
-    // e.preventDefault();
-    // try {
-    //   await axios.post("/ngo/create", newNgo, { withCredentials: true });
-    //   alert("NGO created successfully!");
-    //   setNewNgo({ name: "", description: "", ownerEmail: "" });
-    //   fetchPendingNgos();
-    // } catch (err) {
-    //   console.error("NGO creation failed", err);
-    // }
+    e.preventDefault();
+    try {
+      await axios.post("/ngo/create", newNgo, { withCredentials: true });
+      alert("NGO created successfully!");
+      setNewNgo({ name: "", description: "", ownerEmail: "" });
+      fetchPendingNgos();
+    } catch (err) {
+      console.error("NGO creation failed", err);
+    }
   };
 
   const approveNgo = async (id: string) => {
-    // try {
-    //   await axios.put(`/ngo/${id}/approve`, {}, { withCredentials: true });
-    //   setPendingNgos(pendingNgos.filter((ngo) => ngo._id !== id));
-    // } catch (err) {
-    //   console.error("NGO approval failed", err);
-    // }
+    try {
+      await axios.put(`/ngo/${id}/approve`, {}, { withCredentials: true });
+      setPendingNgos(pendingNgos.filter((ngo) => ngo._id !== id));
+    } catch (err) {
+      console.error("NGO approval failed", err);
+    }
   };
 
   return (
