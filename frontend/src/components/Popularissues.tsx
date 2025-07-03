@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
+import { Link } from 'react-router-dom';
 
 
 const PopularIssues = () => {
@@ -33,8 +34,8 @@ const PopularIssues = () => {
             key={index}
             className="text-sm text-black bg-gray-300 rounded-lg px-3 py-2 hover:bg-gray-400 transition-colors flex justify-between"
           >
-            <span># {category[0]}</span>
-            <span>{category[1]}</span>
+            <Link to={`/posts?category=${category[0]}`}>{category[0]}</Link>
+            <span>{category[1]} Posts</span>
           </span>
         ))}
       </div>

@@ -44,7 +44,7 @@ const PopularCommunity = () => {
                             <img src={community.profilePic} alt="logo" className='rounded-full h-7 w-7 ' />
                             <span className='text-lg hover:underline cursor-pointer' onClick={() => navigate(`/community/${community.name}`, { state: {community } })}>{community.name}</span>
                         </div>
-                        <span className='text-lg'>{community.members.length}</span>
+                        <span className='text-lg'>{community.members.length} Members</span>
                     </span>
                 ))}
             </div>

@@ -15,10 +15,10 @@ const navSections = [
         items: [
             { name: 'Home', path: '/', icon: IoHomeOutline },
             { name: 'Popular', path: '/popular', icon: IoFlameOutline },
-            { name: 'My Posts', path: '/my-posts', icon: IoDocumentTextOutline },
-            { name: 'My Upvotes', path: '/my-upvotes', icon: IoBookmarkOutline },
-            { name: 'Saved Issues', path: `/${localStorage.getItem("username")}/saved-posts`, icon: IoBookmarkOutline },
-            { name: 'Archieved Posts', path: '/archieved-posts', icon: MdArchive },
+            { name: 'My Posts', path: `/posts?user=${localStorage.getItem("uid")}`, icon: IoDocumentTextOutline },
+            { name: 'My Upvotes', path: `/upvotes?user=${localStorage.getItem("uid")}`, icon: IoBookmarkOutline },
+            { name: 'Saved Issues', path: `/saved-posts?user=${localStorage.getItem("username")}`, icon: IoBookmarkOutline },
+            { name: 'Archieved Posts', path: `/archieved-posts?user=${localStorage.getItem("username")}`, icon: MdArchive },
         ],
     },
     {
