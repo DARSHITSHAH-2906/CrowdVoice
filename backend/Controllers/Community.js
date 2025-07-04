@@ -11,18 +11,14 @@ const CreateCommunity = async (req, res) => {
     const profilePicUrl = `http://localhost:3000/uploads/image/${profilePic}`;
     const createdBy = req.user._id;
 
-    // console.log(name, bio, coverImageUrl, profilePicUrl, createdBy)
-
     try {
         const newcommunity = await Community.create({ name: name, bio: bio, coverImage: coverImageUrl, profilePic: profilePicUrl, createdBy: createdBy });
 
         if (!newcommunity) {
             throw new Error("Error creating community");
         }
-        // console.log(newcommunity);
 
         const community = { ...newcommunity._doc, memberCount: newcommunity.members.length }
-        console.log(community);
 
         res.status(200).json({ community });
 
@@ -37,16 +33,13 @@ const FetchCommunityDetails = async (req, res) => {
 
     try {
         const communitydetails = await Community.findById(id);
-        // const cc = await Community.findById(id);
         const posts = await Posts.find({_id : {$in : communitydetails.posts}}).populate("postedBy");
-        // console.log(posts);
 
         if (!communitydetails) {
             throw new Error("Community not found");
         }
 
         const communitydata = { ...communitydetails._doc, memberCount: communitydetails.members.length , posts : posts }
-        console.log(communitydata);
 
         res.status(200).json({ communitydata })
     } catch (err) {
@@ -73,7 +66,6 @@ const FetchAllCommunities = async (req, res) => {
 
 const FetchUserCommunities = async (req, res) => {
     try {
-
         const decoded = req.user;
 
         if (!decoded) {
@@ -83,7 +75,7 @@ const FetchUserCommunities = async (req, res) => {
         const usercommunities = await Community.find({ createdBy: decoded._id });
 
         const usercommunitedata = usercommunities.map((community) => {
-            return { _id: community._id, name: community.name, bio: community.bio, coverImage: community.coverImage, profilePic: community.profilePic, createdAt: community.createdAt, memberCount: community.members.length }
+            return { _id: community._id, name: community.name, bio: community.bio, coverImage: community.coverImage, profilePic: community.profilePic, createdAt: community.createdAt, membersCount: community.members.length }
         });
 
         res.status(200).json({ usercommunitedata });
@@ -129,22 +121,11 @@ const AddPost = async (req, res) => {
 }
 
 const AddMember = async (req,res)=>{
-    const {token} = req.body;
     const id = req.params.id;
-
     try{
-        if(!token){
-            throw new Error ("User Not Authorized");
-        }
-        const decoded = getUser(token);
-        if(!decoded){
-            throw new Error ("User Not Found");
-        }
-
+        const decoded = req.user;
         await Community.findByIdAndUpdate(id , {$push : {members : decoded._id}});
-
         res.status(200).json({message:"Joined Community.."});
-
     }catch(err){
         console.log(err);
         res.status(202).json({error:err});
@@ -154,7 +135,6 @@ const AddMember = async (req,res)=>{
 const FetchPopularCommunities = async (req,res)=>{
     try{
         const communities = await Community.find().select(["name" , "profilePic" , "members"]);
-        // console.log(communities);
         res.status(200).json({communities});
     }catch(error){
         console.log(error);

@@ -4,22 +4,20 @@ const { Posts, Comments } = require("../Models/Post")
 const { OAuth2Client } = require('google-auth-library');
 const client = new OAuth2Client(process.env.GOOGLE_AUTH_KEY);
 
-const { generateJWTtoken, authUser, generateToken } = require("../Service/auth");
-const { getUser } = require("../Service/auth");
+const { generateToken } = require("../Service/auth");
 
 const AuthenticateUser = async (req, res) => {
     const { email, password } = req.body;
     const existinguser = await Users.findOne({ email: email, password: password });
 
     if (existinguser) {
-        const token = generateJWTtoken(existinguser);
-
-        const accessToken = generateToken(existinguser , res);
+        const accessToken = generateToken(existinguser, res);
 
         res.status(200).json({
             message: "User Logged In Successfully",
             token: accessToken,
             username: existinguser.name,
+            uid : existinguser._id
         })
     } else {
         res.status(202).json({ error: "Invalid Email or Password" });
@@ -39,11 +37,8 @@ const GoogleAuthenticateUser = async (req, res) => {
         if (!existinguser) {
             res.status(202).json({ error: "No user found" })
         }
-
-        // const jwttoken = generateJWTtoken(existinguser);
-
-        const accessToken = generateToken(existinguser , res);
-        res.status(200).json({ message: "Logged in Successfull", token: accessToken, name: existinguser.name });
+        const accessToken = generateToken(existinguser, res);
+        res.status(200).json({ message: "Logged in Successfull", token: accessToken, name: existinguser.name ,uid : existinguser._id });
     } catch (error) {
         console.log(error);
         return res.status(500).json({ error: "Internal Server Error" });
@@ -56,9 +51,9 @@ const SingUpUser = async (req, res) => {
     try {
         const newuser = await Users.create({ name, email, password });
 
-        const accessToken = generateToken(newuser , res);
+        const accessToken = generateToken(newuser, res);
 
-        res.status(200).json({ message: "User Sign up successfull", token: accessToken });
+        res.status(200).json({ message: "User Sign up successfull", token: accessToken , name: newuser.name, uid : newuser._id });
 
     } catch (err) {
         res.status(500).json({ error: err });
@@ -75,13 +70,10 @@ const GoogleSignUpUser = async (req, res) => {
         const payload = ticket.getPayload();
 
         const newuser = await Users.create({ name: payload.email.split('@')[0], fullName: payload.name, email: payload.email, password: payload.sub });
-        if (!newuser) {
-            console.log("User not created");
-        }else{
-            const accessToken = generateToken(newuser , res);
-            res.status(200).json({ message: "Account created succesfully", token: accessToken, name: newuser.name });
-        }
-        // const jwttoken = generateJWTtoken(newuser);
+
+        const accessToken = generateToken(newuser, res);
+        res.status(200).json({ message: "Account created succesfully", token: accessToken, name: newuser.name, uid: newuser._id });
+
     } catch (err) {
         console.log(err)
         res.status(400).json({ error: err });
@@ -89,13 +81,13 @@ const GoogleSignUpUser = async (req, res) => {
 }
 
 const FetchUserPosts = async (req, res) => {
-    const token = req.query.token;
     try {
-        const decoded = getUser(token);
+        const decoded = req.user;
         if (!decoded) {
             return res.status(401).json({ message: "Unauthorized" });
         }
         const posts = await Posts.find({ postedBy: decoded._id, isArchieved: false }).populate("postedBy");
+        console.log(posts)
 
         res.status(200).json({ posts });
     } catch (err) {
@@ -141,9 +133,8 @@ const DeletePost = async (req, res) => {
 }
 
 const GetArchievedPosts = async (req, res) => {
-    const token = req.query.token;
     try {
-        const decoded = getUser(token);
+        const decoded = req.user;
         if (!decoded) {
             return res.status(401).json({ error: "Unauthorized" })
         }
@@ -156,7 +147,7 @@ const GetArchievedPosts = async (req, res) => {
 
 const SavePost = async (req, res) => {
     const { post_id } = req.body;
-    let decoded = req.user;
+    const decoded = req.user;
 
     try {
         if (!decoded) {

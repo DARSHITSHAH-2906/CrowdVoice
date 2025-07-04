@@ -43,14 +43,14 @@ const PostSchema = new mongoose.Schema({
         type: String,
         trim: true,
     },
-    likes: {
-        type: Number,
-        default: 0,
-    },
-    dislikes: {
-        type: Number,
-        default: 0,
-    },
+    likes: [{
+        type : mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+    }],
+    dislikes: [{
+        type : mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+    }],
     category: {
         type: String,
         required: true,

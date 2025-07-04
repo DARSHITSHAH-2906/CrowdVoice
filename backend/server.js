@@ -12,6 +12,7 @@ const { RefreshToken, VerifyUser } = require("./Service/auth");
 const userrouter = require("./Routers/User")
 const postrouter = require("./Routers/Post");
 const communityrouter = require("./Routers/Community")
+const ngorouter = require("./Routers/Ngo");
 
 const startserver = async () => {
     const app = express();
@@ -39,6 +40,7 @@ const startserver = async () => {
     app.use("/user", userrouter);
     app.use("/post", postrouter);
     app.use("/community", communityrouter);
+    app.use("/ngos", ngorouter);
 
     app.get("/refresh-token" , RefreshToken);
     app.get("/verify-user" , VerifyUser)

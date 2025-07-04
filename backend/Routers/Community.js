@@ -17,7 +17,7 @@ communityrouter.post("/add-post/:id", VerifyCommunityMember ,uploads.fields([
     {name : "images" , maxCount : 5},
     {name : "videos", maxCount : 5}
 ]), AddPost)
-communityrouter.patch("/add-member/:id" , AddMember)
+communityrouter.patch("/add-member/:id" ,VerifyUser, AddMember)
 communityrouter.get("/popular-communities" , FetchPopularCommunities)
 
 module.exports = communityrouter

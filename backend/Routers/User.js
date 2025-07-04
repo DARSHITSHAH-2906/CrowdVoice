@@ -8,8 +8,8 @@ userrouter.post("/auth" , AuthenticateUser)
 userrouter.post("/auth/google" , GoogleAuthenticateUser)
 userrouter.post("/signup" , SingUpUser);
 userrouter.post("/signup/google" , GoogleSignUpUser);
-userrouter.get("/posts", FetchUserPosts);
-userrouter.get("/archieved-posts" , GetArchievedPosts)
+userrouter.get("/posts", VerifyUser, FetchUserPosts);
+userrouter.get("/archieved-posts" , VerifyUser, GetArchievedPosts)
 userrouter.patch("/archivepost/:id" ,VerifyUser , Archivepost)
 userrouter.delete("/deletepost/:id" , VerifyUser, DeletePost)
 userrouter.patch("/save-post" , VerifyUser , SavePost)
