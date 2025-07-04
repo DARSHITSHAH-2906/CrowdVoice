@@ -50,8 +50,8 @@ const PostCard = ({ post }: PostCardProps) => {
   const media = [...post.images, ...post.videos];
   const { token, setToken, deleteToken } = useToken();
   const { showLoginModal } = useLoginModal()
-  const [likes, setLikes] = useState(post.likes.length);
-  const [dislikes, setDislikes] = useState(post.dislikes.length);
+  const [likes, setLikes] = useState(post.likes?.length | 0);
+  const [dislikes, setDislikes] = useState(post.dislikes?.length | 0);
   const [isLiked, setIsLiked] = useState(post.likes.includes(localStorage.getItem("uid") || ""));
   const [isDisLiked, setIsDisLiked] = useState(post.dislikes.includes(localStorage.getItem("uid") || ""));
   console.log(isLiked , isDisLiked)
