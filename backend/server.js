@@ -45,7 +45,7 @@ const startserver = async () => {
     app.get("/refresh-token" , RefreshToken);
     app.get("/verify-user" , VerifyUser)
 
-    app.listen(3000, () => console.log("Server Started at http://localhost:3000"))
+    app.listen(3000, () => console.log("Server Started at https://crowdvoice.onrender.com"))
 }
 
 startserver();

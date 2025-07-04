@@ -7,8 +7,8 @@ const CreateCommunity = async (req, res) => {
     const coverImage = req.files.coverImage?.[0].filename;
     const profilePic = req.files.profilePic?.[0].filename;
 
-    const coverImageUrl = `http://localhost:3000/uploads/image/${coverImage}`;
-    const profilePicUrl = `http://localhost:3000/uploads/image/${profilePic}`;
+    const coverImageUrl = `https://crowdvoice.onrender.com/uploads/image/${coverImage}`;
+    const profilePicUrl = `https://crowdvoice.onrender.com/uploads/image/${profilePic}`;
     const createdBy = req.user._id;
 
     try {
@@ -93,8 +93,8 @@ const AddPost = async (req, res) => {
         const videos = req.files?.videos || [];
         const { title, content, category, location , attachments , tags } = req.body
     
-        const imageUrl = images.map((image, ind) => `http://localhost:3000/uploads/image/${image.filename}`);
-        const videoUrl = videos.map((video, ind) => `http://localhost:3000/uploads/video/${video.filename}`);
+        const imageUrl = images.map((image, ind) => `https://crowdvoice.onrender.com/uploads/image/${image.filename}`);
+        const videoUrl = videos.map((video, ind) => `https://crowdvoice.onrender.com/uploads/video/${video.filename}`);
 
         const post = await Posts.create({
             title: title,

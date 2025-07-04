@@ -12,8 +12,8 @@ const CreatePost = async (req, res) => {
 
         const { title, description, category, placeOfIncident , urgency , tags } = req.body
         
-        const imageUrl = images.map((image, ind) => `http://localhost:3000/uploads/image/${image.filename}`);
-        const videoUrl = videos.map((video, ind) => `http://localhost:3000/uploads/video/${video.filename}`);
+        const imageUrl = images.map((image, ind) => `https://crowdvoice.onrender.com/uploads/image/${image.filename}`);
+        const videoUrl = videos.map((video, ind) => `https://crowdvoice.onrender.com/uploads/video/${video.filename}`);
 
         await Posts.create({
             title: title,

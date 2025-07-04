@@ -4,7 +4,7 @@ const CreateNgo = async (req, res) => {
     try{
         const ngoData = req.body;
         const logo = req.file?.filename || null;
-        ngoData.logo = logo ? `http://localhost:3000/uploads/image/${logo}` : null; // Assuming logo is an image file
+        ngoData.logo = logo ? `https://crowdvoice.onrender.com/uploads/image/${logo}` : null; // Assuming logo is an image file
         const userId = req.user._id; // Assuming user ID is available in req.user
 
         // Create a new NGO document
