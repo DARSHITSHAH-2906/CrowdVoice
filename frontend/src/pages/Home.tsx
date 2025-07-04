@@ -38,7 +38,7 @@ interface PostType {
 
 const Home = ({sideBar} : {sideBar : boolean}) => {
 
-  const [posts, setPosts] = useState<PostType[] | null>(null)
+  const [posts, setPosts] = useState<PostType[]>([])
   useEffect(() => {
 
     axios.get("https://crowdvoice.onrender.com/post")
@@ -52,7 +52,7 @@ const Home = ({sideBar} : {sideBar : boolean}) => {
     <main id="home" className={`max-w-screen min-h-screen bg-black pt-[70px] pb-[55px] ${sideBar ? "pl-[350px]" : "pl-[240px]"} px-5 flex gap-25`}>
       <div id="posts" className='w-[45vw] flex flex-col gap-5'>
         {
-          posts && posts.map((post: PostType) => <PostCard post={post}/>)
+          posts.length>0 && posts.map((post: PostType) => <PostCard post={post}/>)
         }
       </div>
 
