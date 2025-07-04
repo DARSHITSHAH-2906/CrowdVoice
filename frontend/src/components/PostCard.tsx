@@ -62,7 +62,7 @@ const PostCard = ({ post }: PostCardProps) => {
     } else {
       const post_id = post._id;
       try {
-        const resposne = await axios.patch(`http://localhost:3000/user/save-post`, {
+        const resposne = await axios.patch(`https://crowdvoice.onrender.com/user/save-post`, {
           post_id
         }, {
           headers: {
@@ -79,7 +79,7 @@ const PostCard = ({ post }: PostCardProps) => {
         if (error.response?.status === 401) {
           // Token expired, try to refresh
           try {
-            const res = await axios.get("http://localhost:3000/refresh-token", {
+            const res = await axios.get("https://crowdvoice.onrender.com/refresh-token", {
               withCredentials: true,
             });
             // Save the new token
@@ -87,7 +87,7 @@ const PostCard = ({ post }: PostCardProps) => {
             setToken(newToken, "user");
 
             // Retry
-            const resposne = await axios.patch(`http://localhost:3000/user/save-post`, {
+            const resposne = await axios.patch(`https://crowdvoice.onrender.com/user/save-post`, {
               post_id
             }, {
               headers: {
@@ -116,7 +116,7 @@ const PostCard = ({ post }: PostCardProps) => {
 
   const likePost = async () => {
     try {
-      const response = await axios.patch(`http://localhost:3000/post/like-post/${post._id}`, {}, {
+      const response = await axios.patch(`https://crowdvoice.onrender.com/post/like-post/${post._id}`, {}, {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
@@ -136,14 +136,14 @@ const PostCard = ({ post }: PostCardProps) => {
       if (error.response?.status === 401) {
         // Token expired, try to refresh
         try {
-          const res = await axios.get("http://localhost:3000/refresh-token", {
+          const res = await axios.get("https://crowdvoice.onrender.com/refresh-token", {
             withCredentials: true,
           });
           const newToken = res.data.token;
           setToken(newToken, "user");
 
           // Retry liking the post
-          const response = await axios.patch(`http://localhost:3000/post/like-post/${post._id}`, {}, {
+          const response = await axios.patch(`https://crowdvoice.onrender.com/post/like-post/${post._id}`, {}, {
             headers: {
               'Authorization': `Bearer ${newToken}`,
             },
@@ -173,7 +173,7 @@ const PostCard = ({ post }: PostCardProps) => {
 
   const dislikePost = async () => {
     try {
-      const response = await axios.patch(`http://localhost:3000/post/dislike-post/${post._id}`, {}, {
+      const response = await axios.patch(`https://crowdvoice.onrender.com/post/dislike-post/${post._id}`, {}, {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
@@ -193,14 +193,14 @@ const PostCard = ({ post }: PostCardProps) => {
       if (error.response?.status === 401) {
         // Token expired, try to refresh
         try {
-          const res = await axios.get("http://localhost:3000/refresh-token", {
+          const res = await axios.get("https://crowdvoice.onrender.com/refresh-token", {
             withCredentials: true,
           });
           const newToken = res.data.token;
           setToken(newToken, "user");
 
           // Retry liking the post
-          const response = await axios.patch(`http://localhost:3000/post/dislike-post/${post._id}`, {}, {
+          const response = await axios.patch(`https://crowdvoice.onrender.com/post/dislike-post/${post._id}`, {}, {
             headers: {
               'Authorization': `Bearer ${newToken}`,
             },

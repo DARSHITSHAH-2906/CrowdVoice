@@ -44,7 +44,7 @@ const SavedPosts = () => {
   useEffect(() => {
     const fetchSavedPosts = async () => {
       try {
-        const response = await axios.get(`http://localhost:3000/user/saved-posts`, {
+        const response = await axios.get(`https://crowdvoice.onrender.com/user/saved-posts`, {
           headers: {
             'Authorization': `Bearer ${token}`
           },
@@ -60,7 +60,7 @@ const SavedPosts = () => {
         if (error.response?.status === 401) {
           // Token expired, try to refresh
           try {
-            const res = await axios.get("http://localhost:3000/refresh-token", {
+            const res = await axios.get("https://crowdvoice.onrender.com/refresh-token", {
               withCredentials: true,
             });
             // Save the new token

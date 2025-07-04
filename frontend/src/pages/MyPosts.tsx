@@ -45,7 +45,7 @@ const MyPosts = () => {
         const fetchPosts = async () => {
             try {
 
-                const response = await axios.get(`http://localhost:3000/user/posts`,{
+                const response = await axios.get(`https://crowdvoice.onrender.com/user/posts`,{
                     headers: {
                         Authorization: `Bearer ${token}`    
                     }
@@ -62,7 +62,7 @@ const MyPosts = () => {
                 if (error.response?.status === 401) {
                     // Token expired, try to refresh
                     try {
-                        const res = await axios.get("http://localhost:3000/refresh-token", {
+                        const res = await axios.get("https://crowdvoice.onrender.com/refresh-token", {
                             withCredentials: true,
                         });
 
@@ -70,7 +70,7 @@ const MyPosts = () => {
                         const newToken = res.data.token;
                         setToken(newToken, "user");
 
-                        const response = await axios.get(`http://localhost:3000/user/posts`,{
+                        const response = await axios.get(`https://crowdvoice.onrender.com/user/posts`,{
                             headers: {
                                 Authorization: `Bearer ${newToken}`
                             }
@@ -107,7 +107,7 @@ const MyPosts = () => {
 
     const Archieve = async (id: string): Promise<void> => {
         try {
-            const response = await axios.patch(`http://localhost:3000/user/archivepost/${id}`, {
+            const response = await axios.patch(`https://crowdvoice.onrender.com/user/archivepost/${id}`, {
                 isArchieved: true
             }, {
                 headers: {
@@ -127,7 +127,7 @@ const MyPosts = () => {
             if (error.response?.status === 401) {
                 // Token expired, try to refresh
                 try {
-                    const res = await axios.get("http://localhost:3000/refresh-token", {
+                    const res = await axios.get("https://crowdvoice.onrender.com/refresh-token", {
                         withCredentials: true,
                     });
                     
@@ -135,7 +135,7 @@ const MyPosts = () => {
                     const newToken = res.data.token;
                     setToken(newToken, "user");
                     
-                    const response = await axios.patch(`http://localhost:3000/user/archivepost/${id}`, {
+                    const response = await axios.patch(`https://crowdvoice.onrender.com/user/archivepost/${id}`, {
                         isArchieved: true
                     }, {
                         headers: {
@@ -173,7 +173,7 @@ const MyPosts = () => {
 
     const DeletePost = async (id: string): Promise<void> => {
         try {
-            const response = await axios.delete(`http://localhost:3000/user/deletepost/${id}`, {
+            const response = await axios.delete(`https://crowdvoice.onrender.com/user/deletepost/${id}`, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
@@ -190,7 +190,7 @@ const MyPosts = () => {
             if (error.response?.status === 401) {
                 // Token expired, try to refresh
                 try {
-                    const res = await axios.get("http://localhost:3000/refresh-token", {
+                    const res = await axios.get("https://crowdvoice.onrender.com/refresh-token", {
                         withCredentials: true,
                     });
 
@@ -198,7 +198,7 @@ const MyPosts = () => {
                     const newToken = res.data.token;
                     setToken(newToken, "user");
 
-                    const response = await axios.delete(`http://localhost:3000/user/deletepost/${id}`, {
+                    const response = await axios.delete(`https://crowdvoice.onrender.com/user/deletepost/${id}`, {
                         headers: {
                             Authorization: `Bearer ${newToken}`
                         }

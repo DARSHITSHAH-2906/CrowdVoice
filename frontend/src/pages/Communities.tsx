@@ -19,7 +19,7 @@ const Communities = () => {
     const [communities, setCommunities] = useState<null | CommunityType[]>(null);
 
     useEffect(() => {
-        axios.get("http://localhost:3000/community/communities")
+        axios.get("https://crowdvoice.onrender.com/community/communities")
             .then((response) => setCommunities(response.data.communities))
             .catch((error) => toast.error(error))
     }, [])

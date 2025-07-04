@@ -52,7 +52,7 @@ const CreateNgo = () => {
         e.preventDefault();
         const newFormData = {...formData , causes : formData.causes.split(",")};
         try {
-            const res = await axios.post("http://localhost:3000/ngos/create", newFormData , {
+            const res = await axios.post("https://crowdvoice.onrender.com/ngos/create", newFormData , {
                 headers: { 
                     "Content-Type": "multipart/form-data",
                     'Authorization': `Bearer ${token}` 
@@ -64,7 +64,7 @@ const CreateNgo = () => {
         } catch (error: any) {
             if (error.resposne?.status === 401) {
                 try {
-                    const res = await axios.get("http://localhost:3000/refresh-token", {
+                    const res = await axios.get("https://crowdvoice.onrender.com/refresh-token", {
                         withCredentials: true,
                     });
 
@@ -72,7 +72,7 @@ const CreateNgo = () => {
                     const newToken = res.data.token;
                     setToken(newToken, "user");
 
-                    await axios.post("http://localhost:3000/ngos/create",newFormData, {
+                    await axios.post("https://crowdvoice.onrender.com/ngos/create",newFormData, {
                         withCredentials: true,
                         headers: { Authorization: `Bearer ${newToken}` }
                     });

@@ -41,7 +41,7 @@ const Category = ({ sideBar }: { sideBar: boolean }) => {
     const [posts, setPosts] = useState<PostType[] | null>(null)
 
     useEffect(() => {
-        axios.get(`http://localhost:3000/post/fetch?category=${category}`)
+        axios.get(`https://crowdvoice.onrender.com/post/fetch?category=${category}`)
             .then((res) => setPosts(res.data.posts))
             .catch(error => toast.error(error));
 

@@ -98,7 +98,7 @@ const AddCommunityPost = () => {
 
         try {
             const response = await axios.post(
-                `http://localhost:3000/community/add-post/${community._id}`,
+                `https://crowdvoice.onrender.com/community/add-post/${community._id}`,
                 data,
                 {
                     headers: {
@@ -118,7 +118,7 @@ const AddCommunityPost = () => {
             if (error.response?.status === 401) {
                 // Token expired, try to refresh
                 try {
-                    const res = await axios.get("http://localhost:3000/refresh-token", {
+                    const res = await axios.get("https://crowdvoice.onrender.com/refresh-token", {
                         withCredentials: true,
                     });
                     // Save the new token
@@ -127,7 +127,7 @@ const AddCommunityPost = () => {
 
                     // Retry adding post to community
                     const retryResponse = await axios.post(
-                        `http://localhost:3000/community/add-post/${community._id}`,
+                        `https://crowdvoice.onrender.com/community/add-post/${community._id}`,
                         data,
                         {
                             headers: {

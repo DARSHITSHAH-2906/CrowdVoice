@@ -36,7 +36,7 @@ const PostPage = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        axios.get(`http://localhost:3000/post/comments/${post._id}`)
+        axios.get(`https://crowdvoice.onrender.com/post/comments/${post._id}`)
             .then((response) => setComments(response.data.comments))
             .catch((error) => toast.error(error))
     }, [])
@@ -45,7 +45,7 @@ const PostPage = () => {
         if (!comment.trim()) return;
 
         try {
-            const response = await axios.post("http://localhost:3000/post/add-comment", { comment, post_id: post._id }, {
+            const response = await axios.post("https://crowdvoice.onrender.com/post/add-comment", { comment, post_id: post._id }, {
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
@@ -63,14 +63,14 @@ const PostPage = () => {
             if (error.response?.status === 401) {
                 // Token expired, try to refresh
                 try {
-                    const res = await axios.get("http://localhost:3000/refresh-token", {
+                    const res = await axios.get("https://crowdvoice.onrender.com/refresh-token", {
                         withCredentials: true,
                     });
 
                     // If refresh token is successful
                     const newToken = res.data.token;
                     setToken(newToken, "user");
-                    const retryResponse = await axios.post("http://localhost:3000/post/add-comment", { comment, post_id: post._id }, {
+                    const retryResponse = await axios.post("https://crowdvoice.onrender.com/post/add-comment", { comment, post_id: post._id }, {
                         headers: {
                             'Content-Type': 'multipart/form-data',
                             'Authorization': `Bearer ${token}`

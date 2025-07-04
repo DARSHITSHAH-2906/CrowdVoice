@@ -41,7 +41,7 @@ const Home = ({sideBar} : {sideBar : boolean}) => {
   const [posts, setPosts] = useState<PostType[] | null>(null)
   useEffect(() => {
 
-    axios.get("http://localhost:3000/post")
+    axios.get("https://crowdvoice.onrender.com/post")
       .then((response) => {
         setPosts(response.data.posts);
       })

@@ -17,7 +17,7 @@ const LoginModal = ({ onClose }: LoginModalProps) => {
     const [password, setPassword] = useState<string>('');
 
     const handleGoogleLogin = async (token: string): Promise<void> => {
-        const response = await axios.post("http://localhost:3000/user/auth/google", {
+        const response = await axios.post("https://crowdvoice.onrender.com/user/auth/google", {
             token: token
         }, {
             withCredentials: true, // Ensure cookies are sent with the request
@@ -40,7 +40,7 @@ const LoginModal = ({ onClose }: LoginModalProps) => {
 
     const handleLogin = async (event: React.FormEvent): Promise<void> => {
         event.preventDefault()
-        const response = await axios.post("http://localhost:3000/user/auth", {
+        const response = await axios.post("https://crowdvoice.onrender.com/user/auth", {
             email, password
         }, {
             withCredentials: true, // Ensure cookies are sent with the request

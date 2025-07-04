@@ -100,7 +100,7 @@ const RaiseIssue = () => {
 
         // Now send this data using axios/fetch to your backend
         try {
-            const response = await axios.post("http://localhost:3000/post/create", data, {
+            const response = await axios.post("https://crowdvoice.onrender.com/post/create", data, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                     'Authorization': `Bearer ${token}`
@@ -117,14 +117,14 @@ const RaiseIssue = () => {
             if (error.response?.status === 401) {
                 // Token expired, try to refresh
                 try {
-                    const res = await axios.get("http://localhost:3000/refresh-token", {
+                    const res = await axios.get("https://crowdvoice.onrender.com/refresh-token", {
                         withCredentials: true,
                     });
                     
                     // If refresh token is successful, retry the post request
                     const newToken = res.data.token;
                     setToken(newToken, "user");
-                    const retryResponse = await axios.post("http://localhost:3000/post/create", data, {
+                    const retryResponse = await axios.post("https://crowdvoice.onrender.com/post/create", data, {
                         headers: {
                             'Content-Type': 'multipart/form-data',
                             'Authorization': `Bearer ${token}`

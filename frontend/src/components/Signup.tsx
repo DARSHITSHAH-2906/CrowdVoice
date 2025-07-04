@@ -43,7 +43,7 @@ const SignupModal = ({ onClose }: LoginModalProps) => {
     }
 
     const handleGoogleSignUp = async (token: string): Promise<void> => {
-        const res = await axios.post("http://localhost:3000/user/signup/google",
+        const res = await axios.post("https://crowdvoice.onrender.com/user/signup/google",
             { token: token },
             {
                 withCredentials: true, // Ensure cookies are sent with the request

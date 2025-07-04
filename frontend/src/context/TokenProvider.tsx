@@ -25,7 +25,7 @@ export const TokenProvider = ({ children }: { children: React.ReactNode }) => {
         const ValidateUser = async ()=>{
             const token = localStorage.getItem("user") ? localStorage.getItem("user") : null;
             try{
-                const response = await axios.get("http://localhost:3000/verify-user", {
+                const response = await axios.get("https://crowdvoice.onrender.com/verify-user", {
                     headers: {  
                         Authorization: `Bearer ${token}`
                     }
@@ -38,7 +38,7 @@ export const TokenProvider = ({ children }: { children: React.ReactNode }) => {
                     console.log("Token expired or invalid, trying to refresh...");
                     // Token expired or invalid
                     try{
-                        const response = await axios.get("http://localhost:3000/refresh-token" , {
+                        const response = await axios.get("https://crowdvoice.onrender.com/refresh-token" , {
                             withCredentials: true,
                         });
                         console.log("Token refreshed successfully" , response.data.token);

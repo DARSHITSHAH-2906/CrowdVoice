@@ -14,7 +14,7 @@ const PopularCommunity = () => {
     const [seeMore, toggleSeeMore] = useState(false);
 
     useEffect(() => {
-        axios.get("http://localhost:3000/community/popular-communities")
+        axios.get("https://crowdvoice.onrender.com/community/popular-communities")
             .then(response => Setcommunity(response.data.communities))
             .catch(error => toast.error(error));
     }, [])

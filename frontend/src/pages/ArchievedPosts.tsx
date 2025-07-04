@@ -41,7 +41,7 @@ const ArchivedPost = () => {
         const fetchPosts = async () => {
             try {
 
-                const response = await axios.get(`http://localhost:3000/user/archieved-posts`, {
+                const response = await axios.get(`https://crowdvoice.onrender.com/user/archieved-posts`, {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }
@@ -58,7 +58,7 @@ const ArchivedPost = () => {
                 if (error.response?.status === 401) {
                     // Token expired, try to refresh
                     try {
-                        const res = await axios.get("http://localhost:3000/refresh-token", {
+                        const res = await axios.get("https://crowdvoice.onrender.com/refresh-token", {
                             withCredentials: true,
                         });
 
@@ -66,7 +66,7 @@ const ArchivedPost = () => {
                         const newToken = res.data.token;
                         setToken(newToken, "user");
 
-                        const response = await axios.get(`http://localhost:3000/user/archieved-posts?token=${newToken}`)
+                        const response = await axios.get(`https://crowdvoice.onrender.com/user/archieved-posts?token=${newToken}`)
 
                         if (response.status === 200) {
                             setPosts(response.data.posts);
@@ -98,7 +98,7 @@ const ArchivedPost = () => {
 
     const UnArchieve = async (id: string): Promise<void> => {
         try {
-            const response = await axios.patch(`http://localhost:3000/user/archivepost/${id}`, {
+            const response = await axios.patch(`https://crowdvoice.onrender.com/user/archivepost/${id}`, {
                 isArchieved: false
             }, {
                 headers: {
@@ -118,7 +118,7 @@ const ArchivedPost = () => {
             if (error.response?.status === 401) {
                 // Token expired, try to refresh
                 try {
-                    const res = await axios.get("http://localhost:3000/refresh-token", {
+                    const res = await axios.get("https://crowdvoice.onrender.com/refresh-token", {
                         withCredentials: true,
                     });
                     // Save the new token
@@ -126,7 +126,7 @@ const ArchivedPost = () => {
                     setToken(newToken, "user");
 
                     // Retry unarchiving the post with the new token
-                    const response = await axios.patch(`http://localhost:3000/user/archivepost/${id}`, {
+                    const response = await axios.patch(`https://crowdvoice.onrender.com/user/archivepost/${id}`, {
                         isArchieved: false
                     }, {
                         headers: {

@@ -37,7 +37,7 @@ const NewCommunity = () => {
         formData.append('bio', bio);
 
         try {
-            const response = await axios.post('http://localhost:3000/community/create', formData, {
+            const response = await axios.post('https://crowdvoice.onrender.com/community/create', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                     'Authorization': `Bearer ${token}`,
@@ -55,7 +55,7 @@ const NewCommunity = () => {
             if (error.response?.status === 401) {
                 // Token expired, try to refresh
                 try {
-                    const res = await axios.get("http://localhost:3000/refresh-token", {
+                    const res = await axios.get("https://crowdvoice.onrender.com/refresh-token", {
                         withCredentials: true,
                     });
 
@@ -63,7 +63,7 @@ const NewCommunity = () => {
                     const newToken = res.data.token;
                     setToken(newToken, "user");
 
-                    const retryResponse = await axios.post("http://localhost:3000/community/create", formData, {
+                    const retryResponse = await axios.post("https://crowdvoice.onrender.com/community/create", formData, {
                         headers: {
                             'Content-Type': 'multipart/form-data',
                             'Authorization': `Bearer ${token}`

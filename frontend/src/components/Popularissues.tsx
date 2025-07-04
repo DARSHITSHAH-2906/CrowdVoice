@@ -10,7 +10,7 @@ const PopularIssues = () => {
   const [seeMore, toggleSeeMore] = useState(false);
 
   useEffect(() => {
-    axios.get("http://localhost:3000/post/popular-categories")
+    axios.get("https://crowdvoice.onrender.com/post/popular-categories")
       .then(response => Setcategories(response.data.popularcategory))
       .catch(error => toast.error(error));
   }, [])

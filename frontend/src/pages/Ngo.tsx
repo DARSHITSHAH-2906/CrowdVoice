@@ -23,7 +23,7 @@ const NgoList = ({ sideBar }: { sideBar: boolean }) => {
     useEffect(() => {
         const fetchNgos = async () => {
             try {
-                const res = await axios.get('http://localhost:3000/ngos'); // update URL accordingly
+                const res = await axios.get('https://crowdvoice.onrender.com/ngos'); // update URL accordingly
                 setNgos(res.data.ngos);
             } catch (error) {
                 console.error('Error fetching NGOs:', error);

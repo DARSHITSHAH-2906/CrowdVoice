@@ -29,7 +29,7 @@ const MyCommunities = () => {
         const fetchCommunities = async () => {
             setLoading(true);
             try {
-                const response = await axios.get(`http://localhost:3000/community/my-community`, {
+                const response = await axios.get(`https://crowdvoice.onrender.com/community/my-community`, {
                     headers : {
                         Authorization : `Bearer ${token}`
                     }
@@ -44,7 +44,7 @@ const MyCommunities = () => {
                 if (error.response?.status === 401) {
                     // Token expired, try to refresh
                     try {
-                        const res = await axios.get("http://localhost:3000/refresh-token", {
+                        const res = await axios.get("https://crowdvoice.onrender.com/refresh-token", {
                             withCredentials: true,
                         });
                         // Save the new token
@@ -52,7 +52,7 @@ const MyCommunities = () => {
                         setToken(newToken, "user");
 
                         // Retry fetching communities with the new token
-                        const response = await axios.get(`http://localhost:3000/community/my-community?token=${newToken}`);
+                        const response = await axios.get(`https://crowdvoice.onrender.com/community/my-community?token=${newToken}`);
 
                         if (response.status === 200) {
                             setCommunities(response.data.usercommunitedata);

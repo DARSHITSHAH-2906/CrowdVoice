@@ -61,7 +61,7 @@ const CommunityPage = () => {
 
     useEffect(() => {
         if (community._id) {
-            axios.get(`http://localhost:3000/community/fetchdetails/${community._id}`)
+            axios.get(`https://crowdvoice.onrender.com/community/fetchdetails/${community._id}`)
                 .then((response) => setCommunitydetails(response.data.communitydata))
                 .catch((error) => toast.error(error))
         }
@@ -71,7 +71,7 @@ const CommunityPage = () => {
         if (token) {
 
             try {
-                const response = await axios.patch(`http://localhost:3000/community/add-member/${community._id}`, {}, {
+                const response = await axios.patch(`https://crowdvoice.onrender.com/community/add-member/${community._id}`, {}, {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }
@@ -94,7 +94,7 @@ const CommunityPage = () => {
                 if (error.response?.status === 401) {
                     // Token expired, try to refresh
                     try {
-                        const res = await axios.get("http://localhost:3000/refresh-token", {
+                        const res = await axios.get("https://crowdvoice.onrender.com/refresh-token", {
                             withCredentials: true,
                         });
                         // Save the new token
@@ -102,7 +102,7 @@ const CommunityPage = () => {
                         setToken(newToken, "user");
 
                         // Retry joining community with the new token
-                        const response = await axios.patch(`http://localhost:3000/community/add-member/${community._id}`, {}, {
+                        const response = await axios.patch(`https://crowdvoice.onrender.com/community/add-member/${community._id}`, {}, {
                             headers: {
                                 Authorization: `Bearer ${newToken}`
                             }
