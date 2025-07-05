@@ -29,7 +29,7 @@ const PopularIssues = () => {
 
       {/* Issue List */}
       <div className={`flex flex-col gap-2  ${seeMore ? "max-h-max" : "max-h-[30vh] overflow-hidden"}`}>
-        {popularcategory && popularcategory.map((category, index) => (
+        {popularcategory.length>0 && popularcategory.map((category, index) => (
           <span
             key={index}
             className="text-sm text-black bg-gray-300 rounded-lg px-3 py-2 hover:bg-gray-400 transition-colors flex justify-between"
