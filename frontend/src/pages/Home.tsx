@@ -43,6 +43,7 @@ const Home = ({sideBar} : {sideBar : boolean}) => {
 
     axios.get("https://crowdvoice.onrender.com/post")
       .then((response) => {
+        console.log("Postss fetcheddd....")
         setPosts(response.data.posts);
       })
 
