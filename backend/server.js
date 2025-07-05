@@ -3,8 +3,6 @@ const cors = require("cors");
 require('dotenv').config;
 const path = require("path");
 const cookieParser = require("cookie-parser");
-require('dotenv').config(); // ← missing ()
-
 
 const ConnectToDB = require("./Service/connect")
 
@@ -24,7 +22,6 @@ const startserver = async () => {
         credentials: true, // Allow cookies to be sent with requests
         allowedHeaders: ["Content-Type", "Authorization"]
     }));
-    app.options('*', cors()); // handle preflight requests
     app.use(cookieParser());
     app.use(express.json());
 
