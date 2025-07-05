@@ -41,7 +41,7 @@ const PopularIssues = () => {
       </div>
 
       {/* Toggle Button */}
-      {popularcategory.length > 6 && <button
+      {Array.isArray(popularcategory) && popularcategory.length > 6 && <button
         onClick={() => toggleSeeMore(prev => !prev)}
         className="text-blue-400 text-sm cursor-pointer w-1/3"
         aria-label="Toggle issue list"
