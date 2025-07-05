@@ -47,14 +47,17 @@ interface PostCardProps {
 
 const PostCard = ({ post }: PostCardProps) => {
   const navigate = useNavigate();
-  const media = [...post.images, ...post.videos];
   const { token, setToken, deleteToken } = useToken();
   const { showLoginModal } = useLoginModal()
-  const [likes, setLikes] = useState(post.likes?.length | 0);
-  const [dislikes, setDislikes] = useState(post.dislikes?.length | 0);
-  const [isLiked, setIsLiked] = useState(post.likes.includes(localStorage.getItem("uid") || ""));
-  const [isDisLiked, setIsDisLiked] = useState(post.dislikes.includes(localStorage.getItem("uid") || ""));
-  console.log(isLiked , isDisLiked)
+
+  const media = [...(post.images || []), ...(post.videos || [])];
+  const [likes, setLikes] = useState(Array.isArray(post.likes) ? post.likes.length : 0);
+  const [dislikes, setDislikes] = useState(Array.isArray(post.dislikes) ? post.dislikes.length : 0);
+  const uid = localStorage.getItem("uid") || "";
+  const [isLiked, setIsLiked] = useState(Array.isArray(post.likes) && post.likes.includes(uid));
+  const [isDisLiked, setIsDisLiked] = useState(Array.isArray(post.dislikes) && post.dislikes.includes(uid));
+
+  console.log(isLiked, isDisLiked)
 
   const SavePost = async () => {
     if (!token) {
@@ -282,7 +285,7 @@ const PostCard = ({ post }: PostCardProps) => {
       <Mediaslider media={media} />
 
       {/* Attachments */}
-      {post.attachments.length > 0 && (
+      {Array.isArray(post.attachments) && post.attachments.length > 0 && (
         <div className="mt-4 mb-4">
           <p className="text-sm text-gray-400 mb-1">Attachments:</p>
           <ul className="list-disc ml-5 text-sm text-blue-400">
